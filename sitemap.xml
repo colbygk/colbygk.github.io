@@ -3,12 +3,24 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cgk.sh/posts/tersting/</loc>
+    <lastmod>2017-10-22T14:20:25-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cgk.sh/</loc>
+    <lastmod>2017-10-22T14:20:25-04:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cgk.sh/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cgk.sh/posts/</loc>
+    <lastmod>2017-10-22T14:20:25-04:00</lastmod>
     <priority>0</priority>
   </url>
   
