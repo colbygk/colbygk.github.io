@@ -29,6 +29,7 @@ main { margin-bottom: 15px; }
 .header, .list section, article { background: #fff; }
 .banner { font-size: 4em; }
 .banner .text {
+  font-family: 'Libre Baskerville', serif;
   display: block;
   line-height: 1em;
 }
