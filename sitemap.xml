@@ -3,12 +3,12 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/_header/</loc>
+    <loc>/</loc>
     <lastmod>2017-10-23T20:52:48-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>/_header/</loc>
     <lastmod>2017-10-23T20:52:48-04:00</lastmod>
   </url>
   

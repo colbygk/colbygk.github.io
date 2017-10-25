@@ -1,17 +1,17 @@
 [
 {
+	"uri": "/",
+	"title": "Starting",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
 	"uri": "/_header/",
 	"title": "_Header",
 	"tags": [],
 	"description": "",
 	"content": "CgK\n"
-},
-{
-	"uri": "/",
-	"title": "_Index",
-	"tags": [],
-	"description": "",
-	"content": ""
 },
 {
 	"uri": "/posts/tersting/",
