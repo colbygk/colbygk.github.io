@@ -14,8 +14,22 @@
 	"content": "CgK\n"
 },
 {
+	"uri": "/posts/tersting/",
+	"title": "Tersting",
+	"tags": [],
+	"description": "",
+	"content": " oh yeah "
+},
+{
 	"uri": "/categories/",
 	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/posts/",
+	"title": "Posts",
 	"tags": [],
 	"description": "",
 	"content": ""
