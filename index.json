@@ -1,5 +1,26 @@
 [
 {
+	"uri": "/pictures/",
+	"title": "Precious Fotos",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/pictures/hat_creek_fall_2009_dx/",
+	"title": "Hat Creek Fall 2009 DX",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/pictures/ata_fires_2009/",
+	"title": "ATA Fires 2009",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
 	"uri": "/",
 	"title": "Starting",
 	"tags": [],
@@ -14,22 +35,8 @@
 	"content": "CgK\n"
 },
 {
-	"uri": "/posts/tersting/",
-	"title": "Tersting",
-	"tags": [],
-	"description": "",
-	"content": " oh yeah "
-},
-{
 	"uri": "/categories/",
 	"title": "Categories",
-	"tags": [],
-	"description": "",
-	"content": ""
-},
-{
-	"uri": "/posts/",
-	"title": "Posts",
 	"tags": [],
 	"description": "",
 	"content": ""
