@@ -3,47 +3,52 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/projects/</loc>
+    <loc>https://cgk.sh/photos/</loc>
+    <lastmod>2017-10-27T16:17:34-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cgk.sh/projects/</loc>
     <lastmod>2017-10-27T00:23:19-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/pictures/hat_creek_fall_2009_plane/</loc>
+    <loc>https://cgk.sh/photos/2009/hat_creek_fall_2009_plane/</loc>
     <lastmod>2017-10-27T00:14:44-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/pictures/</loc>
+    <loc>https://cgk.sh/photos/2009/</loc>
     <lastmod>2017-10-26T23:44:30-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/pictures/hat_creek_fall_2009_dx/</loc>
+    <loc>https://cgk.sh/photos/2009/hat_creek_fall_2009_dx/</loc>
     <lastmod>2017-10-26T23:39:20-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/pictures/ata_fires_2009/</loc>
+    <loc>https://cgk.sh/photos/2009/ata_fires_2009/</loc>
     <lastmod>2017-10-26T23:35:51-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>https://cgk.sh/</loc>
     <lastmod>2017-10-23T20:52:48-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/_header/</loc>
+    <loc>https://cgk.sh/_header/</loc>
     <lastmod>2017-10-23T20:52:48-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>https://cgk.sh/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>https://cgk.sh/tags/</loc>
     <priority>0</priority>
   </url>
   

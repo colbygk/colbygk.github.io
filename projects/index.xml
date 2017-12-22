@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on CgK</title>
-    <link>https://cgk.sh/tags/</link>
-    <description>Recent content in Tags on CgK</description>
+    <title>Projects on CgK</title>
+    <link>https://cgk.sh/projects/</link>
+    <description>Recent content in Projects on CgK</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Powered by [Hugo](//gohugo.io). Theme by [PPOffice](http://github.com/ppoffice).</copyright>
+    <lastBuildDate>Fri, 27 Oct 2017 00:23:19 -0400</lastBuildDate>
     
-	<atom:link href="https://cgk.sh/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://cgk.sh/projects/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>
