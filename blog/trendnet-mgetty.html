@@ -1,0 +1,340 @@
+<!doctype html>
+
+<html class="no-js" lang="en">
+
+<head>
+
+
+	<!-- cgk.sh -->
+
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<!-- Page Info -->
+	<link rel="shortcut icon" href="/images/favicon.png">
+	<title>setting up mgetty to dialout and send an audio message under linux – cgk.sh</title>
+	<meta name="description" content="using a TRENDnet USB modem">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="setting up mgetty to dialout and send an audio message under linux – cgk.sh">
+	<meta name="twitter:description" content="using a TRENDnet USB modem">
+	<meta name="twitter:image:src" content="">
+
+	<!-- Facebook OpenGraph -->
+	<meta property="og:title" content="setting up mgetty to dialout and send an audio message under linux – cgk.sh" />
+	<meta property="og:description" content="using a TRENDnet USB modem" />
+	<meta property="og:image" content="" />
+
+	
+	<!-- Font Embed Code -->
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2&display=swap" rel="stylesheet">
+	
+
+	<!-- Styles -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/css/style.css">
+	
+	<!-- Icons -->
+	<script defer src="https://use.fontawesome.com/releases/v5.1.1/js/solid.js" integrity="sha384-GXi56ipjsBwAe6v5X4xSrVNXGOmpdJYZEEh/0/GqJ3JTHsfDsF8v0YQvZCJYAiGu" crossorigin="anonymous"></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.1.1/js/brands.js" integrity="sha384-0inRy4HkP0hJ038ZyfQ4vLl+F4POKbqnaUB6ewmU4dWP0ki8Q27A0VFiVRIpscvL" crossorigin="anonymous"></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.1.1/js/fontawesome.js" integrity="sha384-NY6PHjYLP2f+gL3uaVfqUZImmw71ArL9+Roi9o+I4+RBqArA2CfW1sJ1wkABFfPe" crossorigin="anonymous"></script>
+
+	
+	<!-- Custom Styles -->
+	<style></style>
+	
+
+	
+	<!-- Analytics Code -->
+	
+	
+
+	
+	<!-- Extra Header JS Code -->
+	
+	
+	
+</head>
+
+
+<body class="loading ajax-loading" data-site-url="" data-page-url="/blog/trendnet-mgetty">
+
+
+	<header class="header">
+
+	<div class="header-image header-image--on" style="background-image: url();"></div>
+	<div class="header-image"></div>
+
+	<div class="header-overlay"></div>
+
+	<div class="header__content">
+
+		
+		<a href="/" class="header__title">
+			cgk.sh
+		</a>
+		
+
+		<p class="header__tagline">colby gutierrez-kraybill</p>
+
+		<div class="menu">
+			<div class="menu__toggle js-menu-toggle">
+				<div class="menu__toggle__icon"><span></span></div>
+			</div>
+			<div class="menu__wrap">
+				<ul class="menu__list">
+					
+					<li class="menu__list__item">
+						<a href="/" class="menu__list__item__link">Latest</a>
+					</li>
+					
+					<li class="menu__list__item">
+						<a href="/projects/" class="menu__list__item__link">Projects</a>
+					</li>
+					
+					<li class="menu__list__item">
+						<a href="/about" class="menu__list__item__link">About</a>
+					</li>
+					
+				</ul>
+				<ul class="socials">
+	
+	
+	
+	
+	<li class="socials__item">
+		<a href="https://twitter.com/colbygk" target="_blank" class="socials__item__link" title="Twitter">
+			<i class="fab fa-twitter" aria-hidden="true"></i>
+		</a>
+	</li>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<li class="socials__item">
+		<a href="https://github.com/colbygk" target="_blank" class="socials__item__link" title="Github">
+			<i class="fab fa-github" aria-hidden="true"></i>
+		</a>
+	</li>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</ul>
+			</div>
+		</div>
+
+	</div>
+
+</header>
+
+
+	<div class="loader"><svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="15" r="15"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" /><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" /></circle><circle cx="60" cy="15" r="9" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite" /><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite" /></circle><circle cx="105" cy="15" r="15"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" /><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" /></circle></svg></div>
+
+	<div class="page-loader"></div>
+
+	
+	<div class="page">
+
+		<div class="page__content" data-page-title="setting up mgetty to dialout and send an audio message under linux – cgk.sh" data-image="">
+
+			<section class="intro">
+
+  <div style="text-align: right;"><div id="breadcrumbs">
+
+<a href="/">Home</a>
+
+  
+    / <a href="/blog/">Blog</a>
+  
+
+  
+    / setting up mgetty to dialout and send an audio message under linux
+  
+
+</div></div>
+
+  <div class="wrap">
+
+    <h1>setting up mgetty to dialout and send an audio message under linux</h1>
+    <p>01 February 2011</p>
+
+  </div>
+
+</section>
+
+<section class="single">
+
+  <div class="wrap">
+
+    <p><img src="/images/tech/trendnet.jpg" /></p>
+
+<p>Hardware used:
+<a href="http://www.amazon.com/TRENDnet-Phone-Internet-Modem-TFM-561U/dp/B004BU8O9Y/ref=sr_1_2?ie=UTF8&amp;qid=1296627755&amp;sr=8-2">TRENDnet 56K USB 2.0 Phone, Internet, and Fax Modem TFM-561U (White)</a></p>
+
+<p>Under openSUSE 11.3, this modem is immediately detected when plugged into a USB port and the device file shows up as <code class="highlighter-rouge">/dev/ttyACM0</code> (assuming you only have one).</p>
+
+<p>The TRENDNet modem will respond with a device id of 56000 given the command ATI. mgetty that ships with openSUSE 11.3 will incorrectly detect this modem as a Rockwell and proceed to issue commands that the TRENDNet modem does not understand for voice modes.</p>
+
+<p>Example errors that show up in ``/var/log/vm.log`</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
+02/01 21:14:19  reading port ttyACM0 configuration from config file /etc/mgetty+sendfax/voice.conf
+02/01 21:14:19  detecting voice modem <span class="nb">type
+</span>02/01 21:14:21  Rockwell detected
+02/01 21:14:32  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:14:32  initializing ROCKWELL voice modem
+02/01 21:14:32  vm: Modem returned ERROR
+02/01 21:14:32  can<span class="s1">'t set silence period
+02/01 21:14:32  vm: Modem returned ERROR
+02/01 21:14:32  can'</span>t <span class="nb">set </span>transmit gain
+02/01 21:14:32  vm: Modem returned ERROR
+02/01 21:14:32  can<span class="s1">'t set record gain
+02/01 21:14:32  vm: Modem returned ERROR
+02/01 21:14:32  can'</span>t disable silence deletion
+02/01 21:14:33  vm: Modem returned ERROR
+02/01 21:14:33  can<span class="s1">'t set DLE responses
+02/01 21:14:33  vm: Modem returned ERROR
+02/01 21:14:33  can'</span>t <span class="nb">set </span>silence threshold
+02/01 21:14:33  vm: Modem returned ERROR
+02/01 21:14:44  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:15:20  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:15:20  vm: Modem returned ERROR
+02/01 21:15:20  closing voice modem device
+...</code></pre></figure>
+
+<p>Downloaded mgetty source from <a href="http://mgetty.sourcearchive.com/downloads/1.1.36/mgetty_1.1.36.orig.tar.gz">http://mgetty.sourcearchive.com/downloads/1.1.36/mgetty_1.1.36.orig.tar.gz</a></p>
+
+<p>Modified <code class="highlighter-rouge">mgetty-1.1.36/voice/libvoice/detect.c</code>:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
+/<span class="k">*</span>     <span class="o">{</span>ati, <span class="s2">"56000"</span>,                NULL,   &amp;Rockwell<span class="o">}</span>,<span class="k">*</span>/
+     <span class="o">{</span>ati, <span class="s2">"56000"</span>,                NULL,   &amp;V253modem<span class="o">}</span>,
+...</code></pre></figure>
+
+<p>Note - configuring vgetty to force this setting is possible without modifying the source. No such luck telling ‘vm’ to use the V253modem setup without modifying source.</p>
+
+<p>Built mgetty via:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">~/mgetty-1.1.36/ <span class="c"># cp policy.h-dist policy.h</span>
+~/mgetty-1.1.36/ <span class="c"># make &amp;&amp; make install</span>
+~/mgetty-1.1.36/ <span class="c"># cd voice</span>
+~/mgetty-1.1.36/voice/ <span class="c"># make &amp;&amp; make install</span></code></pre></figure>
+
+<p>This will install into /usr/local.</p>
+
+<p>Format of sound file:</p>
+
+<p>The TRENDNet is picky about the audio file format used. When I had originally thought the TRENDNet was Rockwell based (because mgetty seemed sure that it was) I encoded my test sound file as a Rockwell 4 format (4-bit Rockwell ADPCM), the indication that there was a problem with the sound file was not intuitive with the following error in /var/log/vm.log (note the “Wrong modem type found”)</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">02/01 22:09:35  playing voice file /var/spool/voice/messages/b.rmd
+02/01 22:09:35  can<span class="s1">'t get group '</span>phone<span class="s1">': Success
+02/01 22:09:35   vm: raw modem data header found
+02/01 22:09:35  vm: Wrong modem type found
+02/01 22:09:35   vm(1): ERROR
+02/01 22:09:35   vm(1): READY
+02/01 22:09:35    vm: Got pipe signal
+02/01 22:09:35    vm: queued event SIGNAL_SIGPIPE at position 0009
+02/01 22:09:35    vm: unqueued event SIGNAL_SIGPIPE at position 0009
+02/01 22:09:35    vm: voice_handle_event got event SIGNAL_SIGPIPE with data &lt;_&gt;
+02/01 22:09:35   shell(1): GOODBYE
+02/01 22:09:35   vm(1): GOODBYE SHELL
+02/01 22:09:35    vm: Got pipe signal
+02/01 22:09:35    vm: queued event SIGNAL_SIGPIPE at position 0010
+02/01 22:09:35  vm: could not write to shell
+02/01 22:09:35  vm: Could not handle event, something failed</span></code></pre></figure>
+
+<p>Empirically found that the following sound encoding works:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># wavtopvf /tmp/testsound.wav | pvfspeed -s 7200 | pvftormd V253modem 9 &gt; /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+
+<p>Now, install Modem::Vgetty from CPAN and find where it installed its example scripts <code class="highlighter-rouge">callme.pl</code> and use it:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># /usr/local/bin/vm shell -S /usr/bin/perl callme.pl 8675309 /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+
+<p>If it doesn’t work, try adding <code class="highlighter-rouge">-x 9</code> just before <code class="highlighter-rouge">-S</code> and watch <code class="highlighter-rouge">/var/log/vm.log</code></p>
+
+<p>Resources:<br />
+<a href="http://en.wikipedia.org/wiki/Voice_modem_command_set">http://en.wikipedia.org/wiki/Voice_modem_command_set</a><br />
+<a href="http://www.the-labs.com/Telephony/">http://www.the-labs.com/Telephony/</a><br />
+<a href="http://search.cpan.org/~yenya/Modem-Vgetty-0.03/Vgetty.pm">http://search.cpan.org/~yenya/Modem-Vgetty-0.03/Vgetty.pm</a></p>
+
+
+  </div>
+
+</section>
+
+
+		</div>
+
+	</div>
+
+
+	<footer class="footer">
+
+	<div class="footer__copyright">
+		<span>© 1994-2020 shrewdraven.{com|org|net}, cgk.sh</span>
+	</div>
+
+</footer>
+
+
+
+	<!-- Javascript Assets -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="/js/journal-min.js"></script>
+
+	
+	<!-- Extra Footer JS Code -->
+	
+	
+
+
+</body>
+
+</html>
