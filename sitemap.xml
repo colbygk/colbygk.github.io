@@ -2,15 +2,15 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>/about</loc>
-<lastmod>2020-04-26T22:38:57-05:00</lastmod>
+<lastmod>2020-04-29T08:59:57-05:00</lastmod>
 </url>
 <url>
 <loc>/contact</loc>
-<lastmod>2020-04-26T22:38:57-05:00</lastmod>
+<lastmod>2020-04-29T08:59:57-05:00</lastmod>
 </url>
 <url>
 <loc>/thanks</loc>
-<lastmod>2020-04-26T22:38:57-05:00</lastmod>
+<lastmod>2020-04-29T08:59:57-05:00</lastmod>
 </url>
 <url>
 <loc>/blog/bima-shutdown</loc>
@@ -37,6 +37,10 @@
 <lastmod>2020-04-22T05:43:45-05:00</lastmod>
 </url>
 <url>
+<loc>/blog/gothic</loc>
+<lastmod>2020-04-29T04:59:48-05:00</lastmod>
+</url>
+<url>
 <loc>/project/demo-project</loc>
 <lastmod>2018-06-29T19:00:00-05:00</lastmod>
 </url>
@@ -45,5 +49,8 @@
 </url>
 <url>
 <loc>/</loc>
+</url>
+<url>
+<loc>/blog/page2/</loc>
 </url>
 </urlset>
