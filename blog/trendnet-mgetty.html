@@ -29,7 +29,7 @@
 
 	
 	<!-- Font Embed Code -->
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
 	
 
 	<!-- Styles -->
@@ -217,40 +217,40 @@
 <p>Hardware used:
 <a href="http://www.amazon.com/TRENDnet-Phone-Internet-Modem-TFM-561U/dp/B004BU8O9Y/ref=sr_1_2?ie=UTF8&amp;qid=1296627755&amp;sr=8-2">TRENDnet 56K USB 2.0 Phone, Internet, and Fax Modem TFM-561U (White)</a></p>
 
-<p>Under openSUSE 11.3, this modem is immediately detected when plugged into a USB port and the device file shows up as <code class="highlighter-rouge">/dev/ttyACM0</code> (assuming you only have one).</p>
+<p>Under openSUSE 11.3, this modem is immediately detected when plugged into a USB port and the device file shows up as <code class="language-shell highlighter-rouge">/dev/ttyACM0</code> (assuming you only have one).</p>
 
 <p>The TRENDNet modem will respond with a device id of 56000 given the command ATI. mgetty that ships with openSUSE 11.3 will incorrectly detect this modem as a Rockwell and proceed to issue commands that the TRENDNet modem does not understand for voice modes.</p>
 
-<p>Example errors that show up in ``/var/log/vm.log`</p>
+<p>Example errors that show up in <code class="language-shell highlighter-rouge">/var/log/vm.log</code></p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">...
 02/01 21:14:19  reading port ttyACM0 configuration from config file /etc/mgetty+sendfax/voice.conf
-02/01 21:14:19  detecting voice modem <span class="nb">type
-</span>02/01 21:14:21  Rockwell detected
-02/01 21:14:32  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:14:19  detecting voice modem type
+02/01 21:14:21  Rockwell detected
+02/01 21:14:32  vm: timeout while reading character from voice modem
 02/01 21:14:32  initializing ROCKWELL voice modem
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can<span class="s1">'t set silence period
+02/01 21:14:32  can't set silence period
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can'</span>t <span class="nb">set </span>transmit gain
+02/01 21:14:32  can't set transmit gain
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can<span class="s1">'t set record gain
+02/01 21:14:32  can't set record gain
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can'</span>t disable silence deletion
+02/01 21:14:32  can't disable silence deletion
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:33  can<span class="s1">'t set DLE responses
+02/01 21:14:33  can't set DLE responses
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:33  can'</span>t <span class="nb">set </span>silence threshold
+02/01 21:14:33  can't set silence threshold
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:44  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
-02/01 21:15:20  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:14:44  vm: timeout while reading character from voice modem
+02/01 21:15:20  vm: timeout while reading character from voice modem
 02/01 21:15:20  vm: Modem returned ERROR
 02/01 21:15:20  closing voice modem device
 ...</code></pre></figure>
 
 <p>Downloaded mgetty source from <a href="http://mgetty.sourcearchive.com/downloads/1.1.36/mgetty_1.1.36.orig.tar.gz">http://mgetty.sourcearchive.com/downloads/1.1.36/mgetty_1.1.36.orig.tar.gz</a></p>
 
-<p>Modified <code class="highlighter-rouge">mgetty-1.1.36/voice/libvoice/detect.c</code>:</p>
+<p>Modified <code class="language-shell highlighter-rouge">mgetty-1.1.36/voice/libvoice/detect.c</code>:</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
 /<span class="k">*</span>     <span class="o">{</span>ati, <span class="s2">"56000"</span>,                NULL,   &amp;Rockwell<span class="o">}</span>,<span class="k">*</span>/
@@ -272,8 +272,8 @@
 
 <p>The TRENDNet is picky about the audio file format used. When I had originally thought the TRENDNet was Rockwell based (because mgetty seemed sure that it was) I encoded my test sound file as a Rockwell 4 format (4-bit Rockwell ADPCM), the indication that there was a problem with the sound file was not intuitive with the following error in /var/log/vm.log (note the “Wrong modem type found”)</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">02/01 22:09:35  playing voice file /var/spool/voice/messages/b.rmd
-02/01 22:09:35  can<span class="s1">'t get group '</span>phone<span class="s1">': Success
+<figure class="highlight"><pre><code class="language-logs" data-lang="logs">02/01 22:09:35  playing voice file /var/spool/voice/messages/b.rmd
+02/01 22:09:35  can't get group 'phone': Success
 02/01 22:09:35   vm: raw modem data header found
 02/01 22:09:35  vm: Wrong modem type found
 02/01 22:09:35   vm(1): ERROR
@@ -287,17 +287,17 @@
 02/01 22:09:35    vm: Got pipe signal
 02/01 22:09:35    vm: queued event SIGNAL_SIGPIPE at position 0010
 02/01 22:09:35  vm: could not write to shell
-02/01 22:09:35  vm: Could not handle event, something failed</span></code></pre></figure>
+02/01 22:09:35  vm: Could not handle event, something failed</code></pre></figure>
 
 <p>Empirically found that the following sound encoding works:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># wavtopvf /tmp/testsound.wav | pvfspeed -s 7200 | pvftormd V253modem 9 &gt; /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-logs" data-lang="logs"># wavtopvf /tmp/testsound.wav | pvfspeed -s 7200 | pvftormd V253modem 9 &gt; /var/spool/voice/messages/testsound.rmd</code></pre></figure>
 
-<p>Now, install Modem::Vgetty from CPAN and find where it installed its example scripts <code class="highlighter-rouge">callme.pl</code> and use it:</p>
+<p>Now, install Modem::Vgetty from CPAN and find where it installed its example scripts <code class="language-shell highlighter-rouge">callme.pl</code> and use it:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># /usr/local/bin/vm shell -S /usr/bin/perl callme.pl 8675309 /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-logs" data-lang="logs"># /usr/local/bin/vm shell -S /usr/bin/perl callme.pl 8675309 /var/spool/voice/messages/testsound.rmd</code></pre></figure>
 
-<p>If it doesn’t work, try adding <code class="highlighter-rouge">-x 9</code> just before <code class="highlighter-rouge">-S</code> and watch <code class="highlighter-rouge">/var/log/vm.log</code></p>
+<p>If it doesn’t work, try adding <code class="language-shell highlighter-rouge"><span class="nt">-x</span> 9</code> just before <code class="language-shell highlighter-rouge"><span class="nt">-S</span></code> and watch <code class="language-shell highlighter-rouge">/var/log/vm.log</code></p>
 
 <p>Resources:<br />
 <a href="http://en.wikipedia.org/wiki/Voice_modem_command_set">http://en.wikipedia.org/wiki/Voice_modem_command_set</a><br />
