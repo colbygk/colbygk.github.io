@@ -13,17 +13,17 @@
 
 	<!-- Page Info -->
 	<link rel="shortcut icon" href="/images/favicon.png">
-	<title>setting up mgetty to dialout and send an audio message under linux – cgk.sh</title>
+	<title>mgetty, dialout, audio message under linux – cgk.sh</title>
 	<meta name="description" content="using a TRENDnet USB modem">
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="setting up mgetty to dialout and send an audio message under linux – cgk.sh">
+	<meta name="twitter:title" content="mgetty, dialout, audio message under linux – cgk.sh">
 	<meta name="twitter:description" content="using a TRENDnet USB modem">
 	<meta name="twitter:image:src" content="">
 
 	<!-- Facebook OpenGraph -->
-	<meta property="og:title" content="setting up mgetty to dialout and send an audio message under linux – cgk.sh" />
+	<meta property="og:title" content="mgetty, dialout, audio message under linux – cgk.sh" />
 	<meta property="og:description" content="using a TRENDnet USB modem" />
 	<meta property="og:image" content="" />
 
@@ -181,7 +181,7 @@
 	
 	<div class="page">
 
-		<div class="page__content" data-page-title="setting up mgetty to dialout and send an audio message under linux – cgk.sh" data-image="">
+		<div class="page__content" data-page-title="mgetty, dialout, audio message under linux – cgk.sh" data-image="">
 
 			<section class="intro">
 
@@ -194,14 +194,14 @@
   
 
   
-    / setting up mgetty to dialout and send an audio message under linux
+    / mgetty, dialout, audio message under linux
   
 
 </div></div>
 
   <div class="wrap">
 
-    <h1>setting up mgetty to dialout and send an audio message under linux</h1>
+    <h1>mgetty, dialout, audio message under linux</h1>
     <p>01 February 2011</p>
 
   </div>
@@ -212,7 +212,9 @@
 
   <div class="wrap">
 
-    <p><img style="float: left; margin: 30px;" src="/images/tech/trendnet.jpg" /></p>
+    <h4>setting up mgetty to dialout and send an audio message</h4>
+
+<p><img style="float: left; margin: 30px;" src="/images/tech/trendnet.jpg" /></p>
 
 <p>Hardware used:
 <a href="http://www.amazon.com/TRENDnet-Phone-Internet-Modem-TFM-561U/dp/B004BU8O9Y/ref=sr_1_2?ie=UTF8&amp;qid=1296627755&amp;sr=8-2">TRENDnet 56K USB 2.0 Phone, Internet, and Fax Modem TFM-561U (White)</a></p>
@@ -223,27 +225,27 @@
 
 <p>Example errors that show up in <code class="language-plaintext highlighter-rouge">/var/log/vm.log</code></p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">...
 02/01 21:14:19  reading port ttyACM0 configuration from config file /etc/mgetty+sendfax/voice.conf
-02/01 21:14:19  detecting voice modem <span class="nb">type
-</span>02/01 21:14:21  Rockwell detected
-02/01 21:14:32  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:14:19  detecting voice modem type
+02/01 21:14:21  Rockwell detected
+02/01 21:14:32  vm: timeout while reading character from voice modem
 02/01 21:14:32  initializing ROCKWELL voice modem
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can<span class="s1">'t set silence period
+02/01 21:14:32  can't set silence period
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can'</span>t <span class="nb">set </span>transmit gain
+02/01 21:14:32  can't set transmit gain
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can<span class="s1">'t set record gain
+02/01 21:14:32  can't set record gain
 02/01 21:14:32  vm: Modem returned ERROR
-02/01 21:14:32  can'</span>t disable silence deletion
+02/01 21:14:32  can't disable silence deletion
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:33  can<span class="s1">'t set DLE responses
+02/01 21:14:33  can't set DLE responses
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:33  can'</span>t <span class="nb">set </span>silence threshold
+02/01 21:14:33  can't set silence threshold
 02/01 21:14:33  vm: Modem returned ERROR
-02/01 21:14:44  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
-02/01 21:15:20  vm: <span class="nb">timeout </span><span class="k">while </span>reading character from voice modem
+02/01 21:14:44  vm: timeout while reading character from voice modem
+02/01 21:15:20  vm: timeout while reading character from voice modem
 02/01 21:15:20  vm: Modem returned ERROR
 02/01 21:15:20  closing voice modem device
 ...</code></pre></figure>
@@ -252,19 +254,19 @@
 
 <p>Modified <code class="language-plaintext highlighter-rouge">mgetty-1.1.36/voice/libvoice/detect.c</code>:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">...
-/<span class="k">*</span>     <span class="o">{</span>ati, <span class="s2">"56000"</span>,                NULL,   &amp;Rockwell<span class="o">}</span>,<span class="k">*</span>/
-     <span class="o">{</span>ati, <span class="s2">"56000"</span>,                NULL,   &amp;V253modem<span class="o">}</span>,
-...</code></pre></figure>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="p">...</span>
+<span class="cm">/*     {ati, "56000",                NULL,   &amp;Rockwell},*/</span>
+     <span class="p">{</span><span class="n">ati</span><span class="p">,</span> <span class="s">"56000"</span><span class="p">,</span>                <span class="nb">NULL</span><span class="p">,</span>   <span class="o">&amp;</span><span class="n">V253modem</span><span class="p">},</span>
+<span class="p">...</span></code></pre></figure>
 
 <p>Note - configuring vgetty to force this setting is possible without modifying the source. No such luck telling ‘vm’ to use the V253modem setup without modifying source.</p>
 
 <p>Built mgetty via:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">~/mgetty-1.1.36/ <span class="c"># cp policy.h-dist policy.h</span>
-~/mgetty-1.1.36/ <span class="c"># make &amp;&amp; make install</span>
-~/mgetty-1.1.36/ <span class="c"># cd voice</span>
-~/mgetty-1.1.36/voice/ <span class="c"># make &amp;&amp; make install</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">~/mgetty-1.1.36/ # cp policy.h-dist policy.h
+~/mgetty-1.1.36/ # make &amp;&amp; make install
+~/mgetty-1.1.36/ # cd voice
+~/mgetty-1.1.36/voice/ # make &amp;&amp; make install</code></pre></figure>
 
 <p>This will install into /usr/local.</p>
 
@@ -272,8 +274,8 @@
 
 <p>The TRENDNet is picky about the audio file format used. When I had originally thought the TRENDNet was Rockwell based (because mgetty seemed sure that it was) I encoded my test sound file as a Rockwell 4 format (4-bit Rockwell ADPCM), the indication that there was a problem with the sound file was not intuitive with the following error in /var/log/vm.log (note the “Wrong modem type found”)</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">02/01 22:09:35  playing voice file /var/spool/voice/messages/b.rmd
-02/01 22:09:35  can<span class="s1">'t get group '</span>phone<span class="s1">': Success
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">02/01 22:09:35  playing voice file /var/spool/voice/messages/b.rmd
+02/01 22:09:35  can't get group 'phone': Success
 02/01 22:09:35   vm: raw modem data header found
 02/01 22:09:35  vm: Wrong modem type found
 02/01 22:09:35   vm(1): ERROR
@@ -287,15 +289,15 @@
 02/01 22:09:35    vm: Got pipe signal
 02/01 22:09:35    vm: queued event SIGNAL_SIGPIPE at position 0010
 02/01 22:09:35  vm: could not write to shell
-02/01 22:09:35  vm: Could not handle event, something failed</span></code></pre></figure>
+02/01 22:09:35  vm: Could not handle event, something failed</code></pre></figure>
 
 <p>Empirically found that the following sound encoding works:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># wavtopvf /tmp/testsound.wav | pvfspeed -s 7200 | pvftormd V253modem 9 &gt; /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain"># wavtopvf /tmp/testsound.wav | pvfspeed -s 7200 | pvftormd V253modem 9 &gt; /var/spool/voice/messages/testsound.rmd</code></pre></figure>
 
 <p>Now, install Modem::Vgetty from CPAN and find where it installed its example scripts <code class="language-plaintext highlighter-rouge">callme.pl</code> and use it:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># /usr/local/bin/vm shell -S /usr/bin/perl callme.pl 8675309 /var/spool/voice/messages/testsound.rmd</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain"># /usr/local/bin/vm shell -S /usr/bin/perl callme.pl 8675309 /var/spool/voice/messages/testsound.rmd</code></pre></figure>
 
 <p>If it doesn’t work, try adding <code class="language-plaintext highlighter-rouge">-x 9</code> just before <code class="language-plaintext highlighter-rouge">-S</code> and watch <code class="language-plaintext highlighter-rouge">/var/log/vm.log</code></p>
 
