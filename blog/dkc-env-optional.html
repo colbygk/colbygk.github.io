@@ -13,19 +13,19 @@
 
 	<!-- Page Info -->
 	<link rel="shortcut icon" href="/images/favicon.png">
-	<title>colby g-k – cgk.sh</title>
-	<meta name="description" content="Systems Stuff.">
+	<title>docker-compose bind mounts – cgk.sh</title>
+	<meta name="description" content="Using environment variables to optionally use bind mount source location">
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="colby g-k – cgk.sh">
-	<meta name="twitter:description" content="Systems Stuff.">
-	<meta name="twitter:image:src" content="/images/avataria/big-raven-large.png">
+	<meta name="twitter:title" content="docker-compose bind mounts – cgk.sh">
+	<meta name="twitter:description" content="Using environment variables to optionally use bind mount source location">
+	<meta name="twitter:image:src" content="">
 
 	<!-- Facebook OpenGraph -->
-	<meta property="og:title" content="colby g-k – cgk.sh" />
-	<meta property="og:description" content="Systems Stuff." />
-	<meta property="og:image" content="/images/avataria/big-raven-large.png" />
+	<meta property="og:title" content="docker-compose bind mounts – cgk.sh" />
+	<meta property="og:description" content="Using environment variables to optionally use bind mount source location" />
+	<meta property="og:image" content="" />
 
 	
 	<!-- Font Embed Code -->
@@ -59,12 +59,12 @@
 </head>
 
 
-<body class="loading ajax-loading" data-site-url="" data-page-url="/about">
+<body class="loading ajax-loading" data-site-url="" data-page-url="/blog/dkc-env-optional">
 
 
 	<header class="header">
 
-	<div class="header-image header-image--on" style="background-image: url(/images/avataria/big-raven-large.png);"></div>
+	<div class="header-image header-image--on" style="background-image: url();"></div>
 	<div class="header-image"></div>
 
 	<div class="header-overlay"></div>
@@ -181,75 +181,83 @@
 	
 	<div class="page">
 
-		<div class="page__content" data-page-title="colby g-k – cgk.sh" data-image="/images/avataria/big-raven-large.png">
+		<div class="page__content" data-page-title="docker-compose bind mounts – cgk.sh" data-image="">
 
 			<section class="intro">
 
-	<div class="wrap">
+  <div style="text-align: right;"><div id="breadcrumbs">
 
-		<h1>colby g-k</h1>
-		<p></p>
+<a href="/">Home</a>
 
-	</div>
+  
+    / <a href="/blog/">Blog</a>
+  
+
+  
+    / docker-compose bind mounts
+  
+
+</div></div>
+
+  <div class="wrap">
+
+    <h1>docker-compose bind mounts</h1>
+    <p>21 June 2022</p>
+
+  </div>
 
 </section>
 
 <section class="single">
 
-	<div class="wrap">
+  <div class="wrap">
 
-		<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th> </th>
-      <th> </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><img src="/images/logos/scratch.png" alt="" /></td>
-      <td>2020‑now</td>
-      <td>Scratch Foundation and MIT Media Lab<br />Senior Backend Engineer</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/mit.png" alt="" /></td>
-      <td>2015‑2020</td>
-      <td>Scratch Foundation and MIT Media Lab<br />Senior Backend Engineer</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/unm.png" alt="" /></td>
-      <td>2012‑2015</td>
-      <td>B.S. Computer Science/Maths<br />University of New Mexico<br />Student Tutor</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/sri.png" alt="" /></td>
-      <td>2011‑2015</td>
-      <td>SRI International<br />Research Engineer</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/berkeley.png" alt="" /></td>
-      <td>2001‑2011</td>
-      <td>Radio Astronomy Lab, UC Berkeley<br />Senior Software Developer</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/sgi.png" alt="" /></td>
-      <td>1996‑1997</td>
-      <td>Silicon Graphics Inc.<br />Technical Support Engineer</td>
-    </tr>
-    <tr>
-      <td><img src="/images/logos/sgi.png" alt="" /></td>
-      <td>1995‑1996</td>
-      <td>Silicon Graphics Inc.<br />RSE Support Technical Engineer</td>
-    </tr>
-  </tbody>
-</table>
+    <h5>docker-compose bind mounts will fail if the source does not exist</h5>
+
+<p>The volume bind mount type for docker-compose requires that the source directory/file exist before the directory/file is mounted. There are scenarios where you want to mount credentials, for example, <code class="language-plaintext highlighter-rouge">.aws</code>. This can keep the credentials out of a checked in <code class="language-plaintext highlighter-rouge">docker-compose.yml</code> and leave it to the responsibility of the developer.</p>
+
+<p>Example configuration:</p>
+
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">...
+    - type: bind
+      source: ~/.aws
+      target: /root/.aws
+      consistency: cached
+      volume:
+        nocopy: true
+...</code></pre></figure>
+
+<p>When using docker in a third-party CI/CD pipeline, this can cause errors like:</p>
+
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">...
+ERROR: for scratch-backpack-app  Cannot create container for service app: invalid mount config for type "bind": bind source path does not exist: /home/travis/.aws
+
+ERROR: for app  Cannot create container for service app: invalid mount config for type "bind": bind source path does not exist: /home/travis/.aws
+...</code></pre></figure>
+
+<p>Since the home directory does not contain <code class="language-plaintext highlighter-rouge">.aws</code> the <code class="language-plaintext highlighter-rouge">docker-compose</code> command fails.</p>
+
+<p>One solution:</p>
+
+<figure class="highlight"><pre><code class="language-plain" data-lang="plain">...
+    - type: bind
+      source: ${AWS_CREDENTIALS_DIR:-~/.aws}
+      target: /root/.aws
+      consistency: cached
+      volume:
+        nocopy: true
+...</code></pre></figure>
+
+<p>Leveraging shell substitution syntax, this will look for an environment variable <code class="language-plaintext highlighter-rouge">AWS_CREDENTIALS_DIR</code> and use it if it exists. If it does not exist, it will default to <code class="language-plaintext highlighter-rouge">~/.aws</code></p>
+
+<p>Et voila, it is done!</p>
 
 
 
-	</div>
+  </div>
 
 </section>
+
 
 		</div>
 
