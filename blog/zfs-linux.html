@@ -14,17 +14,17 @@
 	<!-- Page Info -->
 	<link rel="shortcut icon" href="/images/favicon.png">
 	<title>ZFS on Linux – cgk.sh</title>
-	<meta name="description" content="  Notes on creating zeventd for ZFS on LinuxDevelopment host: hoodOS: openSUSE 11.3 kernel: 2.6.34.8-0.2-defaultgithub forks: https://github.com/colbygk/zfs https://github.com/colbygk/splBuild area...">
+	<meta name="description" content="Notes on creating zeventd for ZFS on Linux.">
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="ZFS on Linux – cgk.sh">
-	<meta name="twitter:description" content="  Notes on creating zeventd for ZFS on LinuxDevelopment host: hoodOS: openSUSE 11.3 kernel: 2.6.34.8-0.2-defaultgithub forks: https://github.com/colbygk/zfs https://github.com/colbygk/splBuild area...">
+	<meta name="twitter:description" content="Notes on creating zeventd for ZFS on Linux.">
 	<meta name="twitter:image:src" content="">
 
 	<!-- Facebook OpenGraph -->
 	<meta property="og:title" content="ZFS on Linux – cgk.sh" />
-	<meta property="og:description" content="  Notes on creating zeventd for ZFS on LinuxDevelopment host: hoodOS: openSUSE 11.3 kernel: 2.6.34.8-0.2-defaultgithub forks: https://github.com/colbygk/zfs https://github.com/colbygk/splBuild area..." />
+	<meta property="og:description" content="Notes on creating zeventd for ZFS on Linux." />
 	<meta property="og:image" content="" />
 
 	
@@ -230,72 +230,68 @@
 
   <div class="wrap">
 
-    <ul class="projects">
-  <li>Notes on creating zeventd for ZFS on Linux
-<li>Development host: hood
-<li>OS: openSUSE 11.3 kernel: 2.6.34.8-0.2-default
-<li>github forks: https://github.com/colbygk/zfs https://github.com/colbygk/spl
-<li>Build area: ~/zfs
-<li>Build packages/projects: zfs and spl
-<li>git urls: git@github.com:colbygk/zfs.git git@github.com:colbygk/spl.git<p />
-     <ol><h4>May 16th, 2011</h4>
-<li>Building SPL:
-  Requires non-PREEMPT kernel, easiest to install kernel-default package, modify /boot/grub/menu.lst to boot this kernel by default
-{syntaxhighlighter brush:bash;}
-$ ./configure
-$ make
-$ sudo make install
-{/syntaxhighlighter}
+    <p>Notes on creating zeventd for ZFS on Linux.</p>
 
-Building ZFS:
-{syntaxhighlighter brush:bash;}
-  $ ./configure --with-spl=/home/colby/zfs/spl-0.6.0-rc4
-  $ make
-{/syntaxhighlighter} 
+<ul>
+  <li>Development host: hood</li>
+  <li>OS: openSUSE 11.3, kernel 2.6.34.8-0.2-default</li>
+  <li>GitHub forks: <a href="https://github.com/colbygk/zfs">https://github.com/colbygk/zfs</a>, <a href="https://github.com/colbygk/spl">https://github.com/colbygk/spl</a></li>
+  <li>Build area: <code class="language-plaintext highlighter-rouge">~/zfs</code></li>
+  <li>Build packages/projects: zfs and spl</li>
+  <li>git URLs: <code class="language-plaintext highlighter-rouge">git@github.com:colbygk/zfs.git</code>, <code class="language-plaintext highlighter-rouge">git@github.com:colbygk/spl.git</code></li>
+</ul>
 
-Fails on
-{syntaxhighlighter brush:bash;}
-...
+<h4 id="may-16th-2011">May 16th, 2011</h4>
+
+<p>Building SPL requires a non-PREEMPT kernel; the easiest route is to install the kernel-default package and modify <code class="language-plaintext highlighter-rouge">/boot/grub/menu.lst</code> to boot this kernel by default.</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">$</span><span class="w"> </span>./configure
+<span class="gp">$</span><span class="w"> </span>make
+<span class="gp">$</span><span class="w"> </span><span class="nb">sudo </span>make <span class="nb">install</span></code></pre></figure>
+
+<p>Building ZFS:</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">$</span><span class="w"> </span>./configure <span class="nt">--with-spl</span><span class="o">=</span>/home/colby/zfs/spl-0.6.0-rc4
+<span class="gp">$</span><span class="w"> </span>make</code></pre></figure>
+
+<p>Fails on:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">...
 /home/colby/zfs/zfs/module/zfs/../../module/zfs/spa.c:672:14: error: ‘TASKQ_NORECLAIM’ undeclared (first use in this function)
-...
-{/syntaxhighlighter}
+...</code></pre></figure>
 
-TASKQ_NORECLAIM is defined in zfs/include/sys/zfs_context.h which is included in spa.c
-This is part of a kernel module build, so the output is not very verbose, to make verbose output:
+<p><code class="language-plaintext highlighter-rouge">TASKQ_NORECLAIM</code> is defined in <code class="language-plaintext highlighter-rouge">zfs/include/sys/zfs_context.h</code>, which is included in <code class="language-plaintext highlighter-rouge">spa.c</code>. This is part of a kernel module build, so the output is not very verbose. To make verbose output:</p>
 
-{syntaxhighlighter brush:bash;}
-$ make V=1
-...
-make -f /usr/src/linux-2.6.34-12/scripts/Makefile.build obj=/home/colby/zfs/zfs/module/zfs
-  gcc -Wp,-MD,/home/colby/zfs/zfs/module/zfs/../../module/zfs/.spa.o.d  -nostdinc -isystem /usr/lib64/gcc/x86_64-suse-linux/4.5/include -I/usr/src/linux-2.6.34-12/arch/x86/include -Iinclude  -I/usr/src/linux-2.6.34-12/include -include include/generated/autoconf.h   -I/home/colby/zfs/zfs/module/zfs -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -O2 -m64 -mtune=generic -mno-red-zone -mcmodel=kernel -funit-at-a-time -maccumulate-outgoing-args -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -pipe -Wno-sign-compare -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -Wframe-larger-than=2048 -fno-stack-protector -fomit-frame-pointer -fasynchronous-unwind-tables -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-dwarf2-cfi-asm -fconserve-stack -Wno-unused-but-set-variable -DHAVE_SPL -D_KERNEL -DTEXT_DOMAIN=\"zfs-linux-kernel\" -DNDEBUG -include /home/colby/zfs/spl-0.6.0-rc4/spl_config.h -include /home/colby/zfs/zfs/zfs_config.h   -I/home/colby/zfs/zfs/include   -I/home/colby/zfs/spl-0.6.0-rc4/include   -I/home/colby/zfs/spl-0.6.0-rc4  -DMODULE -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(spa)"  -D"KBUILD_MODNAME=KBUILD_STR(zfs)" -D"DEBUG_HASH=32" -D"DEBUG_HASH2=7" -c -o /home/colby/zfs/zfs/module/zfs/../../module/zfs/.tmp_spa.o /home/colby/zfs/zfs/module/zfs/../../module/zfs/spa.c
-...
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">$</span><span class="w"> </span>make <span class="nv">V</span><span class="o">=</span>1
+<span class="c">...
+</span><span class="go">make -f /usr/src/linux-2.6.34-12/scripts/Makefile.build obj=/home/colby/zfs/zfs/module/zfs
+</span><span class="gp">  gcc -Wp,-MD,/home/colby/zfs/zfs/module/zfs/../../module/zfs/.spa.o.d  -nostdinc -isystem /usr/lib64/gcc/x86_64-suse-linux/4.5/include -I/usr/src/linux-2.6.34-12/arch/x86/include -Iinclude  -I/usr/src/linux-2.6.34-12/include -include include/generated/autoconf.h   -I/home/colby/zfs/zfs/module/zfs -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -O2 -m64 -mtune=generic -mno-red-zone -mcmodel=kernel -funit-at-a-time -maccumulate-outgoing-args -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -pipe -Wno-sign-compare -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -Wframe-larger-than=2048 -fno-stack-protector -fomit-frame-pointer -fasynchronous-unwind-tables -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-dwarf2-cfi-asm -fconserve-stack -Wno-unused-but-set-variable -DHAVE_SPL -D_KERNEL -DTEXT_DOMAIN=\"zfs-linux-kernel\" -DNDEBUG -include /home/colby/zfs/spl-0.6.0-rc4/spl_config.h -include /home/colby/zfs/zfs/zfs_config.h   -I/home/colby/zfs/zfs/include   -I/home/colby/zfs/spl-0.6.0-rc4/include   -I/home/colby/zfs/spl-0.6.0-rc4  -DMODULE -D"KBUILD_STR(s)=#</span>s<span class="s2">" -D"</span><span class="nv">KBUILD_BASENAME</span><span class="o">=</span>KBUILD_STR<span class="o">(</span>spa<span class="o">)</span><span class="s2">"  -D"</span><span class="nv">KBUILD_MODNAME</span><span class="o">=</span>KBUILD_STR<span class="o">(</span>zfs<span class="o">)</span><span class="s2">" -D"</span><span class="nv">DEBUG_HASH</span><span class="o">=</span>32<span class="s2">" -D"</span><span class="nv">DEBUG_HASH2</span><span class="o">=</span>7<span class="s2">" -c -o /home/colby/zfs/zfs/module/zfs/../../module/zfs/.tmp_spa.o /home/colby/zfs/zfs/module/zfs/../../module/zfs/spa.c
+</span><span class="c">...</span></code></pre></figure>
 
-On same command-line, add -save-temps.  Looks like __KERNEL__ is defined during this part of the build, hiding the rest of the file away when building spa.c
-Sending question to maintainer...
-</li>
-</ol><p />
-<ol><h4>May 17th, 2011</h4>
- <li>Response from developer, needed to check out latest copy of spl to build against.  Did so, and working build now.
- <li>Default kernel installed after PREEMPT issue found above, sources not installed, need to install specific devel package:
-{syntaxhighlighter brush:bash;}
-zypper in kernel-default-devel 2.6.34.8-0.2
-{/syntaxhighlighter}
-<li>Install of libraries went to /usr/local/lib, need to add that to ld.so.conf so that other programs pick them up.  Noticed that when running zpool, new process is opened that does the mount, loses LD_LIBRARY_PATH.
-{syntaxhighlighter brush:bash;}
-# zpool create test1 mirror /dev/sdi /dev/sdj
-/sbin/mount.zfs: error while loading shared libraries: libspl.so.0: cannot open shared object file: No such file or directory
-cannot mount 'test1': Input/output error
-{/syntaxhighlighter}
-{syntaxhighlighter brush:bash;}
-# echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/locallib.conf &amp;&amp; ldconfig
-# zpool destroy -f test1
-# zpool create test1 mirror /dev/sdi /dev/sdj
-# zpool list
-NAME    SIZE  ALLOC   FREE    CAP  DEDUP  HEALTH  ALTROOT
+<p>On the same command line, add <code class="language-plaintext highlighter-rouge">-save-temps</code>. Looks like <code class="language-plaintext highlighter-rouge">__KERNEL__</code> is defined during this part of the build, hiding the rest of the file away when building <code class="language-plaintext highlighter-rouge">spa.c</code>. Sending question to maintainer…</p>
+
+<h4 id="may-17th-2011">May 17th, 2011</h4>
+
+<p>Response from developer: needed to check out the latest copy of spl to build against. Did so, and working build now.</p>
+
+<p>The default kernel was installed after the PREEMPT issue found above, but its sources weren’t, so I needed to install a specific devel package:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">zypper <span class="k">in </span>kernel-default-devel 2.6.34.8-0.2</code></pre></figure>
+
+<p>Install of libraries went to <code class="language-plaintext highlighter-rouge">/usr/local/lib</code>; that needs adding to <code class="language-plaintext highlighter-rouge">ld.so.conf</code> so that other programs pick them up. Noticed that when running zpool, a new process is opened that does the mount, and it loses <code class="language-plaintext highlighter-rouge">LD_LIBRARY_PATH</code>:</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span><span class="w"> </span>zpool create test1 mirror /dev/sdi /dev/sdj
+<span class="go">/sbin/mount.zfs: error while loading shared libraries: libspl.so.0: cannot open shared object file: No such file or directory
+cannot mount 'test1': Input/output error</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">"/usr/local/lib"</span> <span class="o">&gt;</span> /etc/ld.so.conf.d/locallib.conf <span class="o">&amp;&amp;</span> ldconfig
+<span class="gp">#</span><span class="w"> </span>zpool destroy <span class="nt">-f</span> test1
+<span class="gp">#</span><span class="w"> </span>zpool create test1 mirror /dev/sdi /dev/sdj
+<span class="gp">#</span><span class="w"> </span>zpool list
+<span class="go">NAME    SIZE  ALLOC   FREE    CAP  DEDUP  HEALTH  ALTROOT
 test1   696G    84K   696G     0%  1.00x  ONLINE  -
-# zpool status
-  pool: test1
+</span><span class="gp">#</span><span class="w"> </span>zpool status
+<span class="go">  pool: test1
  state: ONLINE
  scan: none requested
 config:
@@ -306,11 +302,8 @@ config:
 	    sdi     ONLINE       0     0     0
 	    sdj     ONLINE       0     0     0
 
-errors: No known data errors
-{/syntaxhighlighter}
-&lt;/ol&gt;
-&lt;/ul&gt;
-</li></li></li></ol></li></li></li></li></li></li></li></ul>
+errors: No known data errors</span></code></pre></figure>
+
 
 
   </div>

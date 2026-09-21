@@ -234,224 +234,217 @@
 
 <p>Here’s my attempt:</p>
 
-<p>{syntaxhighlighter brush: ruby;}
-  class GSL_Complex &lt; ::FFI::Struct
-    layout :dat, [:double, 2]</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="k">class</span> <span class="nc">GSL_Complex</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">FFI</span><span class="o">::</span><span class="no">Struct</span>
+    <span class="n">layout</span> <span class="ss">:dat</span><span class="p">,</span> <span class="p">[</span><span class="ss">:double</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R = 0
-I = 1
+    <span class="no">R</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="no">I</span> <span class="o">=</span> <span class="mi">1</span>
 
-def real()
-  return self[:dat][R]
-end
+    <span class="k">def</span> <span class="nf">real</span><span class="p">()</span>
+      <span class="k">return</span> <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span>
+    <span class="k">end</span>
 
-def imag()
-  return self[:dat][I]
-end
+    <span class="k">def</span> <span class="nf">imag</span><span class="p">()</span>
+      <span class="k">return</span> <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span>
+    <span class="k">end</span>
 
-def equals( a )
-  return ( a[:dat][R] == self[:dat][R] &amp;&amp; a[:dat][I] == self[:dat][I] )
-end
+    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span> <span class="n">a</span> <span class="p">)</span>
+      <span class="k">return</span> <span class="p">(</span> <span class="n">a</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">==</span> <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="o">==</span> <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="p">)</span>
+    <span class="k">end</span>
 
-def set( r, i )
-  self[:dat][R] = r
-  self[:dat][I] = i
-  return self
-end
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="p">)</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+      <span class="k">return</span> <span class="nb">self</span>
+    <span class="k">end</span>
 
-def set_real( r )
-  self[:dat][R] = r
-end
+    <span class="k">def</span> <span class="nf">set_real</span><span class="p">(</span> <span class="n">r</span> <span class="p">)</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+    <span class="k">end</span>
 
-def set_imag( i )
-  self[:dat][I] = i
-end
+    <span class="k">def</span> <span class="nf">set_imag</span><span class="p">(</span> <span class="n">i</span> <span class="p">)</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">end</span>
 
-def to_s()
-  return "(#{self[:dat][R]},#{self[:dat][I]})"
-end   end {/syntaxhighlighter}
-</code></pre></div></div>
+    <span class="k">def</span> <span class="nf">to_s</span><span class="p">()</span>
+      <span class="k">return</span> <span class="s2">"(</span><span class="si">#{</span><span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">#{</span><span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">end</span>
+  <span class="k">end</span></code></pre></figure>
 
 <p>The methods added to the class definition match up with the GSL provided <a href="http://www.gnu.org/software/gsl/manual/html_node/Representation-of-complex-numbers.html">macros for manipulating gsl_complex types</a> and should be familiar to anyone who has used GSL or is looking at the GSL documentation.</p>
 
-<p>I thought that it would be nice to add an initializer method that would provide for setting defaults at creation time, such as:
-{syntaxhighlighter brush: ruby;}
-    def initialize( r, i )
-      self[:dat][R] = r
-      self[:dat][I] = i
-    end
-{/syntaxhighlighter}</p>
+<p>I thought that it would be nice to add an initializer method that would provide for setting defaults at creation time, such as:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="p">)</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">end</span></code></pre></figure>
 
 <p>This fails spectacularly<a href="#stacktrace">[1]</a> in both JRuby, and, slightly less spectacularly, in MRI.  The error seems to be related to not knowing the layout of the struct before the code in the initializer is attempting to assign values.  It also seems to happen when you define even an empty initializer method.  I’m sure there’s some expected reason for this to occur…</p>
 
-<p>MRI 1.8.6:
-{syntaxhighlighter brush: ruby;}
-irb(main):002:0&gt; a=GSL_Complex.new(1.0,2.0)
-RuntimeError: layout not set for Struct
-	from ./rgslffi/complex.rb:36:in <code class="language-plaintext highlighter-rouge">[]'
-	from ./rgslffi/complex.rb:36:in </code>initialize’
-	from (irb):2:in `new’
-	from (irb):2
-{/syntaxhighlighter}</p>
+<p>MRI 1.8.6:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">002</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="no">RuntimeError</span><span class="p">:</span> <span class="n">layout</span> <span class="n">not</span> <span class="n">set</span> <span class="k">for</span> <span class="no">Struct</span>
+	<span class="n">from</span> <span class="p">.</span><span class="nf">/</span><span class="n">rgslffi</span><span class="o">/</span><span class="n">complex</span><span class="p">.</span><span class="nf">rb</span><span class="p">:</span><span class="mi">36</span><span class="ss">:in</span> <span class="sb">`[]'
+	from ./rgslffi/complex.rb:36:in `</span><span class="n">initialize</span><span class="s1">'
+	from (irb):2:in `new'</span>
+	<span class="n">from</span> <span class="p">(</span><span class="n">irb</span><span class="p">):</span><span class="mi">2</span></code></pre></figure>
 
 <p>It appears that the super class initializer needs to be called, here’s the new version, but, with a different error (line numbers included):</p>
 
-<p>{syntaxhighlighter brush: ruby;}
-    def initialize( r, i )
-     super()
-      self[:dat][R] = r
-      self[:dat][I] = i
-    end
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="p">)</span>
+     <span class="k">super</span><span class="p">()</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">R</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+      <span class="nb">self</span><span class="p">[</span><span class="ss">:dat</span><span class="p">][</span><span class="no">I</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">end</span></code></pre></figure>
 
 <p>But the error doesn’t occur with creating a new copy of GSL_Complex, but when sending that object to RGSLffi::gsl_complex_conjugate:</p>
 
-<p>{syntaxhighlighter brush: ruby;}
-TypeError: can’t convert FFI::MemoryPointer into Float
-	from ./rgslffi/complex.rb:40:in <code class="language-plaintext highlighter-rouge">[]='
-	from ./rgslffi/complex.rb:40:in </code>initialize’
-	from (irb):4:in `gsl_complex_conjugate’
-	from (irb):4
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="s1">'t convert FFI::MemoryPointer into Float
+	from ./rgslffi/complex.rb:40:in `[]='</span>
+	<span class="n">from</span> <span class="p">.</span><span class="nf">/</span><span class="n">rgslffi</span><span class="o">/</span><span class="n">complex</span><span class="p">.</span><span class="nf">rb</span><span class="p">:</span><span class="mi">40</span><span class="ss">:in</span> <span class="sb">`initialize'
+	from (irb):4:in `</span><span class="n">gsl_complex_conjugate</span><span class="err">'</span>
+	<span class="n">from</span> <span class="p">(</span><span class="n">irb</span><span class="p">):</span><span class="mi">4</span></code></pre></figure>
 
 <p>Hrm…</p>
 
-<p><a name="stacktrace">[1]</a> JRuby 1.4.0:
-{syntaxhighlighter brush: ruby;}
-StructLayout.java:467:in <code class="language-plaintext highlighter-rouge">put': java.lang.NullPointerException
-	from org/jruby/ext/ffi/StructLayout$Array$i_method_2_0$RUBYINVOKER$put.gen:-1:in </code>call’
-	from CachingCallSite.java:330:in <code class="language-plaintext highlighter-rouge">cacheAndCall'
-	from CachingCallSite.java:189:in </code>call’
-	from AttrAssignTwoArgNode.java:42:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from BlockNode.java:71:in <code class="language-plaintext highlighter-rouge">interpret'
-	from InterpretedMethod.java:229:in </code>call’
-	from DefaultMethod.java:193:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:196:in </code>callBlock’
-	from CachingCallSite.java:203:in <code class="language-plaintext highlighter-rouge">call'
-	from RubyClass.java:720:in </code>call’
-	from DynamicMethod.java:184:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:330:in </code>cacheAndCall’
-	from CachingCallSite.java:189:in <code class="language-plaintext highlighter-rouge">call'
-	from CallTwoArgNode.java:59:in </code>interpret’
-	from DAsgnNode.java:110:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from RootNode.java:129:in <code class="language-plaintext highlighter-rouge">interpret'
-	from ASTInterpreter.java:98:in </code>evalWithBinding’
-	from RubyKernel.java:966:in <code class="language-plaintext highlighter-rouge">eval'
-	from org/jruby/RubyKernel$s_method_0_3$RUBYFRAMEDINVOKER$eval.gen:-1:in </code>call’
-	from DynamicMethod.java:150:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:67:in </code>call’
-	from FCallManyArgsNode.java:60:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from InterpretedMethod.java:112:in <code class="language-plaintext highlighter-rouge">call'
-	from InterpretedMethod.java:124:in </code>call’
-	from DefaultMethod.java:144:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:67:in </code>call’
-	from CallManyArgsNode.java:59:in <code class="language-plaintext highlighter-rouge">interpret'
-	from FCallOneArgNode.java:36:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from InterpretedMethod.java:210:in <code class="language-plaintext highlighter-rouge">call'
-	from DefaultMethod.java:185:in </code>call’
-	from CachingCallSite.java:187:in <code class="language-plaintext highlighter-rouge">call'
-	from CallTwoArgNode.java:59:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from RescueNode.java:225:in <code class="language-plaintext highlighter-rouge">executeBody'
-	from RescueNode.java:147:in </code>interpretWithJavaExceptions’
-	from RescueNode.java:110:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BeginNode.java:83:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from InterpretedBlock.java:317:in <code class="language-plaintext highlighter-rouge">evalBlockBody'
-	from InterpretedBlock.java:251:in </code>yield’
-	from InterpretedBlock.java:185:in <code class="language-plaintext highlighter-rouge">yieldSpecific'
-	from Block.java:99:in </code>yieldSpecific’
-	from ZYieldNode.java:25:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from EnsureNode.java:96:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BeginNode.java:83:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from InterpretedMethod.java:192:in <code class="language-plaintext highlighter-rouge">call'
-	from DefaultMethod.java:177:in </code>call’
-	from CachingCallSite.java:156:in <code class="language-plaintext highlighter-rouge">callBlock'
-	from CachingCallSite.java:173:in </code>callIter’
-	from FCallOneArgBlockNode.java:34:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from InterpretedBlock.java:317:in <code class="language-plaintext highlighter-rouge">evalBlockBody'
-	from InterpretedBlock.java:216:in </code>yieldSpecific’
-	from Block.java:117:in <code class="language-plaintext highlighter-rouge">yieldSpecific'
-	from YieldTwoNode.java:31:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from IfNode.java:117:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from RescueNode.java:225:in <code class="language-plaintext highlighter-rouge">executeBody'
-	from RescueNode.java:147:in </code>interpretWithJavaExceptions’
-	from RescueNode.java:110:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BeginNode.java:83:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from InterpretedBlock.java:317:in </code>evalBlockBody’
-	from InterpretedBlock.java:268:in <code class="language-plaintext highlighter-rouge">yield'
-	from Block.java:194:in </code>yield’
-	from RubyKernel.java:1182:in <code class="language-plaintext highlighter-rouge">loop_1_9'
-	from org/jruby/RubyKernel$s_method_0_0$RUBYFRAMEDINVOKER$loop_1_9.gen:-1:in </code>call’
-	from CachingCallSite.java:300:in <code class="language-plaintext highlighter-rouge">cacheAndCall'
-	from CachingCallSite.java:118:in </code>callBlock’
-	from CachingCallSite.java:133:in <code class="language-plaintext highlighter-rouge">callIter'
-	from FCallNoArgBlockNode.java:32:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from InterpretedBlock.java:317:in </code>evalBlockBody’
-	from InterpretedBlock.java:268:in <code class="language-plaintext highlighter-rouge">yield'
-	from Block.java:194:in </code>yield’
-	from RubyKernel.java:1014:in <code class="language-plaintext highlighter-rouge">rbCatch'
-	from org/jruby/RubyKernel$s_method_1_0$RUBYFRAMEDINVOKER$rbCatch.gen:-1:in </code>call’
-	from CachingCallSite.java:320:in <code class="language-plaintext highlighter-rouge">cacheAndCall'
-	from CachingCallSite.java:158:in </code>callBlock’
-	from CachingCallSite.java:173:in <code class="language-plaintext highlighter-rouge">callIter'
-	from FCallOneArgBlockNode.java:34:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from InterpretedMethod.java:155:in <code class="language-plaintext highlighter-rouge">call'
-	from DefaultMethod.java:161:in </code>call’
-	from CachingCallSite.java:300:in <code class="language-plaintext highlighter-rouge">cacheAndCall'
-	from CachingCallSite.java:118:in </code>callBlock’
-	from CachingCallSite.java:123:in <code class="language-plaintext highlighter-rouge">call'
-	from CallNoArgBlockNode.java:64:in </code>interpret’
-	from NewlineNode.java:104:in <code class="language-plaintext highlighter-rouge">interpret'
-	from BlockNode.java:71:in </code>interpret’
-	from InterpretedMethod.java:136:in <code class="language-plaintext highlighter-rouge">call'
-	from DefaultMethod.java:153:in </code>call’
-	from CachingCallSite.java:290:in <code class="language-plaintext highlighter-rouge">cacheAndCall'
-	from CachingCallSite.java:109:in </code>call’
-	from CallNoArgNode.java:61:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from InterpretedBlock.java:317:in <code class="language-plaintext highlighter-rouge">evalBlockBody'
-	from InterpretedBlock.java:268:in </code>yield’
-	from Block.java:194:in <code class="language-plaintext highlighter-rouge">yield'
-	from RubyKernel.java:1014:in </code>rbCatch’
-	from org/jruby/RubyKernel$s_method_1_0$RUBYFRAMEDINVOKER$rbCatch.gen:-1:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:320:in </code>cacheAndCall’
-	from CachingCallSite.java:158:in <code class="language-plaintext highlighter-rouge">callBlock'
-	from CachingCallSite.java:173:in </code>callIter’
-	from FCallOneArgBlockNode.java:34:in <code class="language-plaintext highlighter-rouge">interpret'
-	from NewlineNode.java:104:in </code>interpret’
-	from BlockNode.java:71:in <code class="language-plaintext highlighter-rouge">interpret'
-	from InterpretedMethod.java:173:in </code>call’
-	from DefaultMethod.java:169:in <code class="language-plaintext highlighter-rouge">call'
-	from CachingCallSite.java:310:in </code>cacheAndCall’
-	from CachingCallSite.java:149:in <code class="language-plaintext highlighter-rouge">call'
-	from jirb:19:in </code><strong>file</strong>’
-	from jirb:-1:in <code class="language-plaintext highlighter-rouge">load'
-	from Ruby.java:628:in </code>runScript’
-	from Ruby.java:550:in <code class="language-plaintext highlighter-rouge">runNormally'
-	from Ruby.java:396:in </code>runFromMain’
-	from Main.java:272:in <code class="language-plaintext highlighter-rouge">run'
-	from Main.java:117:in </code>run’
-	from Main.java:97:in `main’
-{/syntaxhighlighter}</p>
+<p><a name="stacktrace">[1]</a> JRuby 1.4.0:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">StructLayout</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">467</span><span class="ss">:in</span> <span class="sb">`put': java.lang.NullPointerException
+	from org/jruby/ext/ffi/StructLayout$Array$i_method_2_0$RUBYINVOKER$put.gen:-1:in `</span><span class="n">call</span><span class="s1">'
+	from CachingCallSite.java:330:in `cacheAndCall'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">189</span><span class="ss">:in</span> <span class="sb">`call'
+	from AttrAssignTwoArgNode.java:42:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from InterpretedMethod.java:229:in `</span><span class="n">call</span><span class="s1">'
+	from DefaultMethod.java:193:in `call'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">196</span><span class="ss">:in</span> <span class="sb">`callBlock'
+	from CachingCallSite.java:203:in `</span><span class="n">call</span><span class="s1">'
+	from RubyClass.java:720:in `call'</span>
+	<span class="n">from</span> <span class="no">DynamicMethod</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">184</span><span class="ss">:in</span> <span class="sb">`call'
+	from CachingCallSite.java:330:in `</span><span class="n">cacheAndCall</span><span class="s1">'
+	from CachingCallSite.java:189:in `call'</span>
+	<span class="n">from</span> <span class="no">CallTwoArgNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">59</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from DAsgnNode.java:110:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">RootNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">129</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from ASTInterpreter.java:98:in `</span><span class="n">evalWithBinding</span><span class="s1">'
+	from RubyKernel.java:966:in `eval'</span>
+	<span class="n">from</span> <span class="n">org</span><span class="o">/</span><span class="n">jruby</span><span class="o">/</span><span class="no">RubyKernel</span><span class="vg">$s_method_0_3$RUBYFRAMEDINVOKER$eval</span><span class="p">.</span><span class="nf">gen</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="ss">:in</span> <span class="sb">`call'
+	from DynamicMethod.java:150:in `</span><span class="n">call</span><span class="s1">'
+	from CachingCallSite.java:67:in `call'</span>
+	<span class="n">from</span> <span class="no">FCallManyArgsNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">60</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from NewlineNode.java:104:in `</span><span class="n">interpret</span><span class="s1">'
+	from InterpretedMethod.java:112:in `call'</span>
+	<span class="n">from</span> <span class="no">InterpretedMethod</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">124</span><span class="ss">:in</span> <span class="sb">`call'
+	from DefaultMethod.java:144:in `</span><span class="n">call</span><span class="s1">'
+	from CachingCallSite.java:67:in `call'</span>
+	<span class="n">from</span> <span class="no">CallManyArgsNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">59</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from FCallOneArgNode.java:36:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from InterpretedMethod.java:210:in `</span><span class="n">call</span><span class="s1">'
+	from DefaultMethod.java:185:in `call'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">187</span><span class="ss">:in</span> <span class="sb">`call'
+	from CallTwoArgNode.java:59:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from RescueNode.java:225:in `</span><span class="n">executeBody</span><span class="s1">'
+	from RescueNode.java:147:in `interpretWithJavaExceptions'</span>
+	<span class="n">from</span> <span class="no">RescueNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">110</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from BeginNode.java:83:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from InterpretedBlock.java:317:in `</span><span class="n">evalBlockBody</span><span class="s1">'
+	from InterpretedBlock.java:251:in `yield'</span>
+	<span class="n">from</span> <span class="no">InterpretedBlock</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">185</span><span class="ss">:in</span> <span class="sb">`yieldSpecific'
+	from Block.java:99:in `</span><span class="n">yieldSpecific</span><span class="s1">'
+	from ZYieldNode.java:25:in `interpret'</span>
+	<span class="n">from</span> <span class="no">NewlineNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">104</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from EnsureNode.java:96:in `</span><span class="n">interpret</span><span class="s1">'
+	from BeginNode.java:83:in `interpret'</span>
+	<span class="n">from</span> <span class="no">NewlineNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">104</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from BlockNode.java:71:in `</span><span class="n">interpret</span><span class="s1">'
+	from InterpretedMethod.java:192:in `call'</span>
+	<span class="n">from</span> <span class="no">DefaultMethod</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">177</span><span class="ss">:in</span> <span class="sb">`call'
+	from CachingCallSite.java:156:in `</span><span class="n">callBlock</span><span class="s1">'
+	from CachingCallSite.java:173:in `callIter'</span>
+	<span class="n">from</span> <span class="no">FCallOneArgBlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">34</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from NewlineNode.java:104:in `</span><span class="n">interpret</span><span class="s1">'
+	from InterpretedBlock.java:317:in `evalBlockBody'</span>
+	<span class="n">from</span> <span class="no">InterpretedBlock</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">216</span><span class="ss">:in</span> <span class="sb">`yieldSpecific'
+	from Block.java:117:in `</span><span class="n">yieldSpecific</span><span class="s1">'
+	from YieldTwoNode.java:31:in `interpret'</span>
+	<span class="n">from</span> <span class="no">NewlineNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">104</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from IfNode.java:117:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from RescueNode.java:225:in `</span><span class="n">executeBody</span><span class="s1">'
+	from RescueNode.java:147:in `interpretWithJavaExceptions'</span>
+	<span class="n">from</span> <span class="no">RescueNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">110</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from BeginNode.java:83:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">InterpretedBlock</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">317</span><span class="ss">:in</span> <span class="sb">`evalBlockBody'
+	from InterpretedBlock.java:268:in `</span><span class="k">yield</span><span class="s1">'
+	from Block.java:194:in `yield'</span>
+	<span class="n">from</span> <span class="no">RubyKernel</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">1182</span><span class="ss">:in</span> <span class="sb">`loop_1_9'
+	from org/jruby/RubyKernel$s_method_0_0$RUBYFRAMEDINVOKER$loop_1_9.gen:-1:in `</span><span class="n">call</span><span class="s1">'
+	from CachingCallSite.java:300:in `cacheAndCall'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">118</span><span class="ss">:in</span> <span class="sb">`callBlock'
+	from CachingCallSite.java:133:in `</span><span class="n">callIter</span><span class="s1">'
+	from FCallNoArgBlockNode.java:32:in `interpret'</span>
+	<span class="n">from</span> <span class="no">NewlineNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">104</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from InterpretedBlock.java:317:in `</span><span class="n">evalBlockBody</span><span class="s1">'
+	from InterpretedBlock.java:268:in `yield'</span>
+	<span class="n">from</span> <span class="no">Block</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">194</span><span class="ss">:in</span> <span class="sb">`yield'
+	from RubyKernel.java:1014:in `</span><span class="n">rbCatch</span><span class="s1">'
+	from org/jruby/RubyKernel$s_method_1_0$RUBYFRAMEDINVOKER$rbCatch.gen:-1:in `call'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">320</span><span class="ss">:in</span> <span class="sb">`cacheAndCall'
+	from CachingCallSite.java:158:in `</span><span class="n">callBlock</span><span class="s1">'
+	from CachingCallSite.java:173:in `callIter'</span>
+	<span class="n">from</span> <span class="no">FCallOneArgBlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">34</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from NewlineNode.java:104:in `</span><span class="n">interpret</span><span class="s1">'
+	from BlockNode.java:71:in `interpret'</span>
+	<span class="n">from</span> <span class="no">InterpretedMethod</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">155</span><span class="ss">:in</span> <span class="sb">`call'
+	from DefaultMethod.java:161:in `</span><span class="n">call</span><span class="s1">'
+	from CachingCallSite.java:300:in `cacheAndCall'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">118</span><span class="ss">:in</span> <span class="sb">`callBlock'
+	from CachingCallSite.java:123:in `</span><span class="n">call</span><span class="s1">'
+	from CallNoArgBlockNode.java:64:in `interpret'</span>
+	<span class="n">from</span> <span class="no">NewlineNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">104</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from BlockNode.java:71:in `</span><span class="n">interpret</span><span class="s1">'
+	from InterpretedMethod.java:136:in `call'</span>
+	<span class="n">from</span> <span class="no">DefaultMethod</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">153</span><span class="ss">:in</span> <span class="sb">`call'
+	from CachingCallSite.java:290:in `</span><span class="n">cacheAndCall</span><span class="s1">'
+	from CachingCallSite.java:109:in `call'</span>
+	<span class="n">from</span> <span class="no">CallNoArgNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">61</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from NewlineNode.java:104:in `</span><span class="n">interpret</span><span class="s1">'
+	from InterpretedBlock.java:317:in `evalBlockBody'</span>
+	<span class="n">from</span> <span class="no">InterpretedBlock</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">268</span><span class="ss">:in</span> <span class="sb">`yield'
+	from Block.java:194:in `</span><span class="k">yield</span><span class="s1">'
+	from RubyKernel.java:1014:in `rbCatch'</span>
+	<span class="n">from</span> <span class="n">org</span><span class="o">/</span><span class="n">jruby</span><span class="o">/</span><span class="no">RubyKernel</span><span class="vg">$s_method_1_0$RUBYFRAMEDINVOKER$rbCatch</span><span class="p">.</span><span class="nf">gen</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="ss">:in</span> <span class="sb">`call'
+	from CachingCallSite.java:320:in `</span><span class="n">cacheAndCall</span><span class="s1">'
+	from CachingCallSite.java:158:in `callBlock'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">173</span><span class="ss">:in</span> <span class="sb">`callIter'
+	from FCallOneArgBlockNode.java:34:in `</span><span class="n">interpret</span><span class="s1">'
+	from NewlineNode.java:104:in `interpret'</span>
+	<span class="n">from</span> <span class="no">BlockNode</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">71</span><span class="ss">:in</span> <span class="sb">`interpret'
+	from InterpretedMethod.java:173:in `</span><span class="n">call</span><span class="s1">'
+	from DefaultMethod.java:169:in `call'</span>
+	<span class="n">from</span> <span class="no">CachingCallSite</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">310</span><span class="ss">:in</span> <span class="sb">`cacheAndCall'
+	from CachingCallSite.java:149:in `</span><span class="n">call</span><span class="s1">'
+	from jirb:19:in `__file__'</span>
+	<span class="n">from</span> <span class="n">jirb</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="ss">:in</span> <span class="sb">`load'
+	from Ruby.java:628:in `</span><span class="n">runScript</span><span class="s1">'
+	from Ruby.java:550:in `runNormally'</span>
+	<span class="n">from</span> <span class="no">Ruby</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">396</span><span class="ss">:in</span> <span class="sb">`runFromMain'
+	from Main.java:272:in `</span><span class="n">run</span><span class="s1">'
+	from Main.java:117:in `run'</span>
+	<span class="n">from</span> <span class="no">Main</span><span class="p">.</span><span class="nf">java</span><span class="p">:</span><span class="mi">97</span><span class="ss">:in</span> <span class="sb">`main'</span></code></pre></figure>
+
 
 
   </div>

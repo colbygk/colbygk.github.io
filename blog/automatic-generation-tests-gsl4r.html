@@ -245,267 +245,247 @@
 
 <ul>
   <li>write_c_tests
-  <li>compile_c_tests
-  <li>run_c_tests
-&lt;/ul&gt;
+  </li>
+<li>compile_c_tests
+  </li>
+<li>run_c_tests
+</li>
+</ul>
 
 <div class="img-float-left">
   <img src="/files/webfm/users/colby/blog/2010/gsl4r-wrapper-diagram.png" />
    fig 2 - Generalizing the creation of wrappers and their tests against C calls
 </div>
 
-These methods would create C programs, these C programs would have all the proper variable typing and instantiation and results gathering to then write out Ruby source code, which would then make calls to my FFI wrappers and compare the results against the answers, written by the C program directly into the Ruby code it had generated.  Yahtzee! (see fig 2)
+<p>These methods would create C programs, these C programs would have all the proper variable typing and instantiation and results gathering to then write out Ruby source code, which would then make calls to my FFI wrappers and compare the results against the answers, written by the C program directly into the Ruby code it had generated.  Yahtzee! (see fig 2)</p>
 
 <h3>write_c_tests</h3>
-In <a href="http://shrewdraven.com/content/automatically-generated-method-aliases-gsl4r">another post</a> I described using the <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/ospace.html">reflection features of Ruby</a> to automatically create simpler, or nicely named function aliases, turning all calls from A.gsl_complex_func() into A.func().
+<p>In <a href="http://shrewdraven.com/content/automatically-generated-method-aliases-gsl4r">another post</a> I described using the <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/ospace.html">reflection features of Ruby</a> to automatically create simpler, or nicely named function aliases, turning all calls from A.gsl_complex_func() into A.func().</p>
 
-Using the same reflection features, I mixin the GSL4r::Harness module into a class specific GSL4r::Complex::Harness, which implements attributes used to help create a compilable C file and a runnable Ruby output from the compiled C program:
+<p>Using the same reflection features, I mixin the GSL4r::Harness module into a class specific GSL4r::Complex::Harness, which implements attributes used to help create a compilable C file and a runnable Ruby output from the compiled C program:</p>
 
-{syntaxhighlighter brush:ruby;}
-module GSL4r
-  module Complex
-    class Harness
-      include ::GSL4r::Harness
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">GSL4r</span>
+  <span class="k">module</span> <span class="nn">Complex</span>
+    <span class="k">class</span> <span class="nc">Harness</span>
+      <span class="kp">include</span> <span class="o">::</span><span class="no">GSL4r</span><span class="o">::</span><span class="no">Harness</span>
 
-      def initialize
-        @c_compiler = "gcc"
-        @c_src_name = "gsl_complex_tests_gen.c"
-        @c_binary = "gsl_complex_tests_gen"
-        @c_includes = ["gsl/gsl_complex.h","gsl/gsl_complex_math.h"]
-        @c_libs = [`gsl-config --libs`.chomp,`gsl-config --cflags`.chomp]
-        @c_tests = ::GSL4r::Complex::Methods.methods.grep(/^c_test/)
-        @r_header = %Q{$: &lt;&lt; File.join('..','lib')\\nrequire 'test/unit'\\nrequire 'test/unit/autorunner'\\nrequire 'gsl4r/complex'\\ninclude GSL4r::Complex\\nclass ComplexTests &lt; Test::Unit::TestCase\\n  EPSILON = 5.0e-15}
+      <span class="k">def</span> <span class="nf">initialize</span>
+        <span class="vi">@c_compiler</span> <span class="o">=</span> <span class="s2">"gcc"</span>
+        <span class="vi">@c_src_name</span> <span class="o">=</span> <span class="s2">"gsl_complex_tests_gen.c"</span>
+        <span class="vi">@c_binary</span> <span class="o">=</span> <span class="s2">"gsl_complex_tests_gen"</span>
+        <span class="vi">@c_includes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"gsl/gsl_complex.h"</span><span class="p">,</span><span class="s2">"gsl/gsl_complex_math.h"</span><span class="p">]</span>
+        <span class="vi">@c_libs</span> <span class="o">=</span> <span class="p">[</span><span class="sb">`gsl-config --libs`</span><span class="p">.</span><span class="nf">chomp</span><span class="p">,</span><span class="sb">`gsl-config --cflags`</span><span class="p">.</span><span class="nf">chomp</span><span class="p">]</span>
+        <span class="vi">@c_tests</span> <span class="o">=</span> <span class="o">::</span><span class="no">GSL4r</span><span class="o">::</span><span class="no">Complex</span><span class="o">::</span><span class="no">Methods</span><span class="p">.</span><span class="nf">methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/^c_test/</span><span class="p">)</span>
+        <span class="vi">@r_header</span> <span class="o">=</span> <span class="sx">%Q{$: &lt;&lt; File.join('..','lib')</span><span class="se">\\</span><span class="sx">nrequire 'test/unit'</span><span class="se">\\</span><span class="sx">nrequire 'test/unit/autorunner'</span><span class="se">\\</span><span class="sx">nrequire 'gsl4r/complex'</span><span class="se">\\</span><span class="sx">ninclude GSL4r::Complex</span><span class="se">\\</span><span class="sx">nclass ComplexTests &lt; Test::Unit::TestCase</span><span class="se">\\</span><span class="sx">n  EPSILON = 5.0e-15}</span>
 
-        @r_footer = %Q{end}
+        <span class="vi">@r_footer</span> <span class="o">=</span> <span class="sx">%Q{end}</span>
 
-      end # initialize
-    end # GSL4r::Complex::Harness
-  end # GSL4r::Complex
-end # GSL4r
-{/syntaxhighlighter}
+      <span class="k">end</span> <span class="c1"># initialize</span>
+    <span class="k">end</span> <span class="c1"># GSL4r::Complex::Harness</span>
+  <span class="k">end</span> <span class="c1"># GSL4r::Complex</span>
+<span class="k">end</span> <span class="c1"># GSL4r</span></code></pre></figure>
 
-Note: The extra slashes in @r_header are required so that they are not escaped before being written to disk via Ruby eval statements.
+<p>Note: The extra slashes in @r_header are required so that they are not escaped before being written to disk via Ruby eval statements.</p>
 
-The GSL4r::GSL_Complex class also includes helper methods for translating the GSL_Complex Ruby based FFI::Struct into a generic C based gsl_complex struct, such as how the type is declared, initialized and assigned values:
+<p>The GSL4r::GSL_Complex class also includes helper methods for translating the GSL_Complex Ruby based FFI::Struct into a generic C based gsl_complex struct, such as how the type is declared, initialized and assigned values:</p>
 
-{syntaxhighlighter brush:ruby;}
-...
-        def r_type()
-          "GSL_Complex"
-        end
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">...</span>
+        <span class="k">def</span> <span class="nf">r_type</span><span class="p">()</span>
+          <span class="s2">"GSL_Complex"</span>
+        <span class="k">end</span>
 
-        def r_equals(v1,v2)
-          "#{v1.to_s}.equals(#{v2.to_s})"
-        end
+        <span class="k">def</span> <span class="nf">r_equals</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+          <span class="s2">"</span><span class="si">#{</span><span class="n">v1</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="s2">.equals(</span><span class="si">#{</span><span class="n">v2</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">end</span>
 
-        def r_assignment( name )
-          "#{name}.set(2.0,2.0)" # these numbers should make c_assignment for the test
-        end
+        <span class="k">def</span> <span class="nf">r_assignment</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span>
+          <span class="s2">"</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">.set(2.0,2.0)"</span> <span class="c1"># these numbers should make c_assignment for the test</span>
+        <span class="k">end</span>
 
-        def c_to_r_assignment(v1,v2)
-          "printf(\\\"  #{v1}.set(%.15g,%.15g)\\\\n\\\",GSL_REAL(#{v2}),GSL_IMAG(#{v2}));\\n"
-        end
+        <span class="k">def</span> <span class="nf">c_to_r_assignment</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+          <span class="s2">"printf(</span><span class="se">\\\"</span><span class="s2">  </span><span class="si">#{</span><span class="n">v1</span><span class="si">}</span><span class="s2">.set(%.15g,%.15g)</span><span class="se">\\\\</span><span class="s2">n</span><span class="se">\\\"</span><span class="s2">,GSL_REAL(</span><span class="si">#{</span><span class="n">v2</span><span class="si">}</span><span class="s2">),GSL_IMAG(</span><span class="si">#{</span><span class="n">v2</span><span class="si">}</span><span class="s2">));</span><span class="se">\\</span><span class="s2">n"</span>
+        <span class="k">end</span>
 
-        def c_type()
-          "gsl_complex"
-        end
+        <span class="k">def</span> <span class="nf">c_type</span><span class="p">()</span>
+          <span class="s2">"gsl_complex"</span>
+        <span class="k">end</span>
 
-        def c_assignment( name )
-          "GSL_SET_COMPLEX(&amp;#{name}, 2.0, 2.0);"
-        end
-...
-{/syntaxhighlighter}
+        <span class="k">def</span> <span class="nf">c_assignment</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span>
+          <span class="s2">"GSL_SET_COMPLEX(&amp;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">, 2.0, 2.0);"</span>
+        <span class="k">end</span>
+<span class="o">...</span></code></pre></figure>
 
-Each GSL function is referenced using normal FFI syntax, such as:
+<p>Each GSL function is referenced using normal FFI syntax, such as:</p>
 
-{syntaxhighlighter brush:ruby;}
-        attach_function :gsl_complex_arg, [ GSL_Complex.by_value ], :double
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">        <span class="n">attach_function</span> <span class="ss">:gsl_complex_arg</span><span class="p">,</span> <span class="p">[</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span> <span class="p">],</span> <span class="ss">:double</span></code></pre></figure>
 
-But, I want to have an extra method call created, in the form:
+<p>But, I want to have an extra method call created, in the form:</p>
 
-{syntaxhighlighter brush:ruby;}
-  c_test_gsl_complex_func ...
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">c_test_gsl_complex_func</span> <span class="o">...</span></code></pre></figure>
 
-I did this by creating a utility method called attach_gsl_function which, first attaches the function in the normal FFI way, but then creates the c_test_ version of the method as well, which, returns a string that is composed of the text for the C code that will make a call to the GSL method, and will write the results as a Ruby program to compare the answer to my wrapper function.  Easy!
+<p>I did this by creating a utility method called attach_gsl_function which, first attaches the function in the normal FFI way, but then creates the c_test_ version of the method as well, which, returns a string that is composed of the text for the C code that will make a call to the GSL method, and will write the results as a Ruby program to compare the answer to my wrapper function.  Easy!</p>
 
-{syntaxhighlighter brush:ruby;}
-    def attach_gsl_function( method_name, args, return_var, args_type=nil, return_type=nil )
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">attach_gsl_function</span><span class="p">(</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">return_var</span><span class="p">,</span> <span class="n">args_type</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="kp">nil</span> <span class="p">)</span>
 
-      # This function is attached to the extended ::FFI::Library
-      # module from the calling namespace, e.g. ::GSL4r::Complex::Methods
-      attach_function method_name, args, return_var
+      <span class="c1"># This function is attached to the extended ::FFI::Library</span>
+      <span class="c1"># module from the calling namespace, e.g. ::GSL4r::Complex::Methods</span>
+      <span class="n">attach_function</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">return_var</span>
 
-      if ( args_type != nil )
-        # prepare c and ruby args code
-        c_src = ""
-        c_call_vars = []
-        c_return_name = "c_r#{$c_var_num}"
-        r_src = []
-        if ( ! args_type.is_a?(Array) )
-          args_type = Array.new([args_type])
-        end
-        args_type.each { |a_t|
-          c_var_name = "v#{$c_var_num += 1}"
-          c_src &lt;&lt; (a_t.respond_to?("c_type") ?
-                    "  #{a_t.c_type} #{c_var_name};\n" : "#{a_t.to_s} #{c_var_name} ")
-          c_src &lt;&lt; (a_t.respond_to?("c_assignment") ?
-                    "  #{a_t.c_assignment("#{c_var_name}")}\n" : "= (#{a_t.to_s})2.0;\n")
-          c_call_vars &lt;&lt; "#{c_var_name}"
+      <span class="k">if</span> <span class="p">(</span> <span class="n">args_type</span> <span class="o">!=</span> <span class="kp">nil</span> <span class="p">)</span>
+        <span class="c1"># prepare c and ruby args code</span>
+        <span class="n">c_src</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">c_call_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">c_return_name</span> <span class="o">=</span> <span class="s2">"c_r</span><span class="si">#{</span><span class="vg">$c_var_num</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">r_src</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="n">args_type</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Array</span><span class="p">)</span> <span class="p">)</span>
+          <span class="n">args_type</span> <span class="o">=</span> <span class="no">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="n">args_type</span><span class="p">])</span>
+        <span class="k">end</span>
+        <span class="n">args_type</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">a_t</span><span class="o">|</span>
+          <span class="n">c_var_name</span> <span class="o">=</span> <span class="s2">"v</span><span class="si">#{</span><span class="vg">$c_var_num</span> <span class="o">+=</span> <span class="mi">1</span><span class="si">}</span><span class="s2">"</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">a_t</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"c_type"</span><span class="p">)</span> <span class="p">?</span>
+                    <span class="s2">"  </span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">c_type</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">"</span> <span class="p">:</span> <span class="s2">"</span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2"> "</span><span class="p">)</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">a_t</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"c_assignment"</span><span class="p">)</span> <span class="p">?</span>
+                    <span class="s2">"  </span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">c_assignment</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="p">:</span> <span class="s2">"= (</span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="s2">)2.0;</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+          <span class="n">c_call_vars</span> <span class="o">&lt;&lt;</span> <span class="s2">"</span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2">"</span>
 
-          r_src &lt;&lt; (a_t.respond_to?("r_type") ?
-                    "  #{c_var_name} = #{a_t.r_type}.create" : "")
-          r_src &lt;&lt; (a_t.respond_to?("r_assignment") ?
-                    "  #{a_t.r_assignment("#{c_var_name}")}" : "  #{c_var_name} = 2.0")
-        } # args_type.each
-        # prepare c return type
-        c_src &lt;&lt; (return_type.respond_to?("c_type") ?
-                  "  #{return_type.c_type} #{c_return_name};\n" :
-                  "  #{return_type.to_s} #{c_return_name};\n")
+          <span class="n">r_src</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">a_t</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"r_type"</span><span class="p">)</span> <span class="p">?</span>
+                    <span class="s2">"  </span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">r_type</span><span class="si">}</span><span class="s2">.create"</span> <span class="p">:</span> <span class="s2">""</span><span class="p">)</span>
+          <span class="n">r_src</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">a_t</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"r_assignment"</span><span class="p">)</span> <span class="p">?</span>
+                    <span class="s2">"  </span><span class="si">#{</span><span class="n">a_t</span><span class="p">.</span><span class="nf">r_assignment</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="p">:</span> <span class="s2">"  </span><span class="si">#{</span><span class="n">c_var_name</span><span class="si">}</span><span class="s2"> = 2.0"</span><span class="p">)</span>
+        <span class="p">}</span> <span class="c1"># args_type.each</span>
+        <span class="c1"># prepare c return type</span>
+        <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">return_type</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"c_type"</span><span class="p">)</span> <span class="p">?</span>
+                  <span class="s2">"  </span><span class="si">#{</span><span class="n">return_type</span><span class="p">.</span><span class="nf">c_type</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">c_return_name</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">"</span> <span class="p">:</span>
+                  <span class="s2">"  </span><span class="si">#{</span><span class="n">return_type</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">c_return_name</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
-        # prepare c call
-        c_src &lt;&lt; "  #{c_return_name} = #{method_name}(#{c_call_vars.join(",")});\n"
+        <span class="c1"># prepare c call</span>
+        <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  </span><span class="si">#{</span><span class="n">c_return_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">#{</span><span class="n">method_name</span><span class="si">}</span><span class="s2">(</span><span class="si">#{</span><span class="n">c_call_vars</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span><span class="si">}</span><span class="s2">);</span><span class="se">\n</span><span class="s2">"</span>
 
-        # now generate the ruby code for the unit test
-        c_src &lt;&lt; "  puts(" &lt;&lt; %Q{\\"def test_#{method_name}()\\"} &lt;&lt; ");\n"
+        <span class="c1"># now generate the ruby code for the unit test</span>
+        <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  puts("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"def test_</span><span class="si">#{</span><span class="n">method_name</span><span class="si">}</span><span class="sx">()</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");</span><span class="se">\n</span><span class="s2">"</span>
 
-        # TODO, Need to insert ruby object instantiation code here!
-        #
-        r_src.each { |v|
-          c_src &lt;&lt; "  puts(" &lt;&lt; %Q{\\"#{v}\\"} &lt;&lt; ");\n"
-        }
+        <span class="c1"># TODO, Need to insert ruby object instantiation code here!</span>
+        <span class="c1">#</span>
+        <span class="n">r_src</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  puts("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"</span><span class="si">#{</span><span class="n">v</span><span class="si">}</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="p">}</span>
 
-        r_r1 = "r_r1" # ruby result
-        c_src &lt;&lt; "  puts(" &lt;&lt; %Q{\\"  #{r_r1} = ::#{self.to_s}::#{method_name}(#{c_call_vars.join(",")})\\"} &lt;&lt; ");\n"
-        if ( return_type.respond_to?("c_to_r_assignment") )
-          r_r2 = "r_r2" # ruby result comparitor
-          c_src &lt;&lt; "  puts(" &lt;&lt; %Q{\\"  #{r_r2} = #{return_type.r_type}.new\\"} &lt;&lt; ");\n"
-          c_src &lt;&lt; "  #{return_type.c_to_r_assignment(r_r2,c_return_name)}"
-          c_src &lt;&lt; "  printf(" &lt;&lt; %Q{\\"  assert r_r1.equals(r_r2)\\\\n\\"} &lt;&lt; ");\n"
-        else
-          c_src &lt;&lt; "  printf(" &lt;&lt; %Q{\\"  assert_in_delta r_r1, %.15g, EPSILON\\\\n\\"} &lt;&lt; ", #{c_return_name});\n"
-        end
+        <span class="n">r_r1</span> <span class="o">=</span> <span class="s2">"r_r1"</span> <span class="c1"># ruby result</span>
+        <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  puts("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"  </span><span class="si">#{</span><span class="n">r_r1</span><span class="si">}</span><span class="sx"> = ::</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">to_s</span><span class="si">}</span><span class="sx">::</span><span class="si">#{</span><span class="n">method_name</span><span class="si">}</span><span class="sx">(</span><span class="si">#{</span><span class="n">c_call_vars</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span><span class="si">}</span><span class="sx">)</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">return_type</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"c_to_r_assignment"</span><span class="p">)</span> <span class="p">)</span>
+          <span class="n">r_r2</span> <span class="o">=</span> <span class="s2">"r_r2"</span> <span class="c1"># ruby result comparitor</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  puts("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"  </span><span class="si">#{</span><span class="n">r_r2</span><span class="si">}</span><span class="sx"> = </span><span class="si">#{</span><span class="n">return_type</span><span class="p">.</span><span class="nf">r_type</span><span class="si">}</span><span class="sx">.new</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");</span><span class="se">\n</span><span class="s2">"</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  </span><span class="si">#{</span><span class="n">return_type</span><span class="p">.</span><span class="nf">c_to_r_assignment</span><span class="p">(</span><span class="n">r_r2</span><span class="p">,</span><span class="n">c_return_name</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  printf("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"  assert r_r1.equals(r_r2)</span><span class="se">\\\\</span><span class="sx">n</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">else</span>
+          <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  printf("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"  assert_in_delta r_r1, %.15g, EPSILON</span><span class="se">\\\\</span><span class="sx">n</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">", </span><span class="si">#{</span><span class="n">c_return_name</span><span class="si">}</span><span class="s2">);</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">end</span>
 
-        c_src &lt;&lt; "  puts(" &lt;&lt; %Q{\\"end\\"} &lt;&lt; ");"
-        eval &lt;&lt;-end_eval
-        def c_test_#{method_name}
+        <span class="n">c_src</span> <span class="o">&lt;&lt;</span> <span class="s2">"  puts("</span> <span class="o">&lt;&lt;</span> <span class="sx">%Q{</span><span class="se">\\</span><span class="sx">"end</span><span class="se">\\</span><span class="sx">"}</span> <span class="o">&lt;&lt;</span> <span class="s2">");"</span>
+        <span class="nb">eval</span> <span class="o">&lt;&lt;-</span><span class="no">end_eval</span><span class="sh">
+        def c_test_</span><span class="si">#{</span><span class="n">method_name</span><span class="si">}</span><span class="sh">
           # Build list of arguments and their values
-          "#{c_src}"
+          "</span><span class="si">#{</span><span class="n">c_src</span><span class="si">}</span><span class="sh">"
         end
-        end_eval
-      end # if args_type != nil
-    end # attach_gsl_function
-{/syntaxhighlighter}
+</span><span class="no">        end_eval</span>
+      <span class="k">end</span> <span class="c1"># if args_type != nil</span>
+    <span class="k">end</span> <span class="c1"># attach_gsl_function</span></code></pre></figure>
 
-This dense bit of jiggery-pokery is probably going to be rewritten in the future; multiple times.  Right now it produces correct C code to help test all of the functions I have already included into the GSL4r::Complex module (~2 dozen).  It lacks handling of pointers, which will be absolutely essential for adding in more GSL routines.
+<p>This dense bit of jiggery-pokery is probably going to be rewritten in the future; multiple times.  Right now it produces correct C code to help test all of the functions I have already included into the GSL4r::Complex module (~2 dozen).  It lacks handling of pointers, which will be absolutely essential for adding in more GSL routines.</p>
 
-So, to recap, for each GSL function included, the shadow c_test_method is created, which can then be iterated over to create the C source code and write it to disk:
+<p>So, to recap, for each GSL function included, the shadow c_test_method is created, which can then be iterated over to create the C source code and write it to disk:</p>
 
-{syntaxhighlighter brush:ruby;}
-    def write_c_tests
-      f = File.new("#{TEST_DIR}/#{@c_src_name}", "w")
-      f.puts "/* Auto generated by #{self.class.name} */"
-      f.puts "#include <stdio.h>"
-      @c_includes.each { |i|
-        f.puts "#include \"#{i}\""
-      }
-      f.puts "int main( int argc, char **argv )\n{\n"
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">write_c_tests</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="no">TEST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="vi">@c_src_name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"/* Auto generated by </span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2"> */"</span>
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"#include &lt;stdio.h&gt;"</span>
+      <span class="vi">@c_includes</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"#include </span><span class="se">\"</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="se">\"</span><span class="s2">"</span>
+      <span class="p">}</span>
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"int main( int argc, char **argv )</span><span class="se">\n</span><span class="s2">{</span><span class="se">\n</span><span class="s2">"</span>
 
-      f.puts "  puts(\"#{@r_header}\");"
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"  puts(</span><span class="se">\"</span><span class="si">#{</span><span class="vi">@r_header</span><span class="si">}</span><span class="se">\"</span><span class="s2">);"</span>
 
-      @c_tests.each { |t|
-        t_fqmn_a = self.class.name.split("::")
-        t_fqmn_a.pop
-        src = ""
-        eval &lt;&lt;-end_eval
-           src = ::#{t_fqmn_a.join("::")}::Methods::#{t}
-        end_eval
-        f.puts " /* #{t} */"
-        f.puts src
-      }
+      <span class="vi">@c_tests</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+        <span class="n">t_fqmn_a</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">name</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">"::"</span><span class="p">)</span>
+        <span class="n">t_fqmn_a</span><span class="p">.</span><span class="nf">pop</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="nb">eval</span> <span class="o">&lt;&lt;-</span><span class="no">end_eval</span><span class="sh">
+           src = ::</span><span class="si">#{</span><span class="n">t_fqmn_a</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"::"</span><span class="p">)</span><span class="si">}</span><span class="sh">::Methods::</span><span class="si">#{</span><span class="n">t</span><span class="si">}</span><span class="sh">
+</span><span class="no">        end_eval</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">" /* </span><span class="si">#{</span><span class="n">t</span><span class="si">}</span><span class="s2"> */"</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="n">src</span>
+      <span class="p">}</span>
 
-      f.puts "  puts(\"#{@r_footer}\");"
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"  puts(</span><span class="se">\"</span><span class="si">#{</span><span class="vi">@r_footer</span><span class="si">}</span><span class="se">\"</span><span class="s2">);"</span>
 
-      f.puts "  return(0);\n}\n"
-      f.close
-    end
-{/syntaxhighlighter}
+      <span class="n">f</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"  return(0);</span><span class="se">\n</span><span class="s2">}</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="n">f</span><span class="p">.</span><span class="nf">close</span>
+    <span class="k">end</span></code></pre></figure>
 
-The real meat of write_c_tests is at line 17, which is the call to the c_test_method on each gsl function attached for the ::Harness module making the call, in this case, GSL4r::Complex.
+<p>The real meat of write_c_tests is at line 17, which is the call to the c_test_method on each gsl function attached for the ::Harness module making the call, in this case, GSL4r::Complex.</p>
 
-Once written, it's time to,
+<p>Once written, it’s time to,</p>
 
 <h3>compile_c_tests</h3>
 
-Using attributes defined in GSL4r::Complex::Harness, described above, the generated test is compiled and written as test/gsl_complex_tests_gen.
+<p>Using attributes defined in GSL4r::Complex::Harness, described above, the generated test is compiled and written as test/gsl_complex_tests_gen.</p>
 
-{syntaxhighlighter brush:ruby;}
-    def compile_c_tests
-      compile_s = "#{@c_compiler} #{@c_flags.join(" ")} " +
-        "-o #{TEST_DIR}/#{@c_binary} #{TEST_DIR}/#{@c_src_name}"
-      p compile_s
-      `#{compile_s}`
-    end
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">compile_c_tests</span>
+      <span class="n">compile_s</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="vi">@c_compiler</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@c_flags</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span><span class="si">}</span><span class="s2"> "</span> <span class="o">+</span>
+        <span class="s2">"-o </span><span class="si">#{</span><span class="no">TEST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="vi">@c_binary</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="no">TEST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="vi">@c_src_name</span><span class="si">}</span><span class="s2">"</span>
+      <span class="nb">p</span> <span class="n">compile_s</span>
+      <span class="sb">`</span><span class="si">#{</span><span class="n">compile_s</span><span class="si">}</span><span class="sb">`</span>
+    <span class="k">end</span></code></pre></figure>
 
-and sample output of this:
+<p>and sample output of this:</p>
 
-{syntaxhighlighter brush:plain;}
-gcc -L/opt/local/lib -lgsl -lgslcblas -lm -I/opt/local/include -o test/gsl_complex_tests_gen test/gsl_complex_tests_gen.c
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-text" data-lang="text">gcc -L/opt/local/lib -lgsl -lgslcblas -lm -I/opt/local/include -o test/gsl_complex_tests_gen test/gsl_complex_tests_gen.c</code></pre></figure>
 
 <h3>run_c_tests</h3>
 
-This is dead simple:
+<p>This is dead simple:</p>
 
-{syntaxhighlighter brush:ruby;}
-    def run_c_tests( filename )
-      `#{TEST_DIR}/#{@c_binary} &gt; test/#{filename}`
-    end
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="k">def</span> <span class="nf">run_c_tests</span><span class="p">(</span> <span class="n">filename</span> <span class="p">)</span>
+      <span class="sb">`</span><span class="si">#{</span><span class="no">TEST_DIR</span><span class="si">}</span><span class="sb">/</span><span class="si">#{</span><span class="vi">@c_binary</span><span class="si">}</span><span class="sb"> &gt; test/</span><span class="si">#{</span><span class="n">filename</span><span class="si">}</span><span class="sb">`</span>
+    <span class="k">end</span></code></pre></figure>
 
-In this case, the passed in filename is test/complex_test.rb
+<p>In this case, the passed in filename is test/complex_test.rb</p>
 
-This is all run out of the task :setup_tests in the Rakefile for gsl4r which then is picked up after by the :test task, which looks for all files matching "test/*_test.rb".  Finding complex_test.rb, which looks something like this:
+<p>This is all run out of the task :setup_tests in the Rakefile for gsl4r which then is picked up after by the :test task, which looks for all files matching “test/*_test.rb”.  Finding complex_test.rb, which looks something like this:</p>
 
-{syntaxhighlighter brush:ruby;}
-$: &lt;&lt; File.join('..','lib')
-# generated by gsl_complex_tests_gen
-require 'test/unit'
-require 'test/unit/autorunner'
-require 'gsl4r/complex'
-include GSL4r::Complex
-class ComplexTests &lt; Test::Unit::TestCase
-  EPSILON = 5.0e-15
-  def test_gsl_complex_add_real()
-    v12 = GSL_Complex.create
-    v12.set(2.0,2.0)
-    v13 = 2.0
-    r_r1 = ::GSL4r::Complex::Methods::gsl_complex_add_real(v12,v13)
-    r_r2 = GSL_Complex.new
-    r_r2.set(4,2)
-    assert r_r1.equals(r_r2)
-  end
-...
-{/syntaxhighlighter}
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vg">$:</span> <span class="o">&lt;&lt;</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'..'</span><span class="p">,</span><span class="s1">'lib'</span><span class="p">)</span>
+<span class="c1"># generated by gsl_complex_tests_gen</span>
+<span class="nb">require</span> <span class="s1">'test/unit'</span>
+<span class="nb">require</span> <span class="s1">'test/unit/autorunner'</span>
+<span class="nb">require</span> <span class="s1">'gsl4r/complex'</span>
+<span class="kp">include</span> <span class="no">GSL4r</span><span class="o">::</span><span class="no">Complex</span>
+<span class="k">class</span> <span class="nc">ComplexTests</span> <span class="o">&lt;</span> <span class="no">Test</span><span class="o">::</span><span class="no">Unit</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="no">EPSILON</span> <span class="o">=</span> <span class="mf">5.0e-15</span>
+  <span class="k">def</span> <span class="nf">test_gsl_complex_add_real</span><span class="p">()</span>
+    <span class="n">v12</span> <span class="o">=</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span>
+    <span class="n">v12</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">v13</span> <span class="o">=</span> <span class="mf">2.0</span>
+    <span class="n">r_r1</span> <span class="o">=</span> <span class="o">::</span><span class="no">GSL4r</span><span class="o">::</span><span class="no">Complex</span><span class="o">::</span><span class="no">Methods</span><span class="o">::</span><span class="n">gsl_complex_add_real</span><span class="p">(</span><span class="n">v12</span><span class="p">,</span><span class="n">v13</span><span class="p">)</span>
+    <span class="n">r_r2</span> <span class="o">=</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">r_r2</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">assert</span> <span class="n">r_r1</span><span class="p">.</span><span class="nf">equals</span><span class="p">(</span><span class="n">r_r2</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="o">...</span></code></pre></figure>
 
-And when run, looks like the normal output from Test::Unit::AutoRunner
+<p>And when run, looks like the normal output from Test::Unit::AutoRunner</p>
 
-{syntaxhighlighter brush:plain;}
-Loaded suite test
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Loaded suite test
 Started
 ....................
-Finished in 0.002378 seconds.
-{/syntaxhighlighter}
+Finished in 0.002378 seconds.</code></pre></figure>
 
 <h3>But what does it all mean?</h3>
-With the addition of the attach_gsl_function and the ability for the GSL4r library to automatically check my wrapper results against a C version of a call to GSL functions, I can double check my work, without writing many extra C and Ruby testing routines.  It's all automatically generated and, has already saved me from a typo error when declaring a GSL method, a typo error that I might not have noticed until someone else submitted a bug report.
+<p>With the addition of the attach_gsl_function and the ability for the GSL4r library to automatically check my wrapper results against a C version of a call to GSL functions, I can double check my work, without writing many extra C and Ruby testing routines.  It’s all automatically generated and, has already saved me from a typo error when declaring a GSL method, a typo error that I might not have noticed until someone else submitted a bug report.</p>
 
-Creation of this code would not have been possible without the work of Wayne Meissner (FFI), Yukihiro Matsumoto (Ruby), Charles Nutters' blogging about FFI and of course, the Ruby community.
+<p>Creation of this code would not have been possible without the work of Wayne Meissner (FFI), Yukihiro Matsumoto (Ruby), Charles Nutters’ blogging about FFI and of course, the Ruby community.</p>
 
-<a name="someday">[1]</a> Someday, I may feel compelled to figure out the FFI::Generator interface to try generating the individual calls to GSL routines.<a href="#one">&uArr;</a>
-</stdio.h></li></li></li></ul>
+<p><a name="someday">[1]</a> Someday, I may feel compelled to figure out the FFI::Generator interface to try generating the individual calls to GSL routines.<a href="#one">⇑</a></p>
 
 
   </div>

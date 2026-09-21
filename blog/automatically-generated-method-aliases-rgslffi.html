@@ -235,40 +235,35 @@
 <s>rgslffi</s>
 <p>GSL4r is a set of wrapper routines I’m creating around <a href="http://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a> mathematical routines using the <a href="http://wiki.github.com/ffi/ffi/why-use-ffi">Foreign Function Interface (FFI)</a> library for Ruby/JRuby.  Using FFI helps avoid tying GSL only to the C based Ruby interpreters and potentially will make the library universally available across all Ruby implementations.  Something we’d like to have while using JRuby for the ATA.</p>
 
-<p>There’s a lot of busy work involved, with long lists of GSL functions that need wrapping, and, I realized that simple wrapping would make my library cumbersome to use, for example, when using methods to manipulate complex numbers, if I only made a wrapper for the function:
-{syntaxhighlighter brush: ruby;}
-   attach_function :gsl_complex_add, [ GSL_Complex.by_value, GSL_Complex.by_value ], GSL_Complex.by_value
-{/syntaxhighlighter}</p>
+<p>There’s a lot of busy work involved, with long lists of GSL functions that need wrapping, and, I realized that simple wrapping would make my library cumbersome to use, for example, when using methods to manipulate complex numbers, if I only made a wrapper for the function:</p>
 
-<p>And the code to use it:
-{syntaxhighlighter brush: ruby;}
-  a=GSL_Complex.create(1,1)
-  b=GSL_Complex.create(1,1)
-  puts gsl_complex_add(a,b)
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">   <span class="n">attach_function</span> <span class="ss">:gsl_complex_add</span><span class="p">,</span> <span class="p">[</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span><span class="p">,</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span> <span class="p">],</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span></code></pre></figure>
 
-<p>But what if I wanted to be able to do something like:
-{syntaxhighlighter brush: ruby;}
-  a=GSL_Complex.create(1,1)
-  b=GSL_Complex.create(1,1)
-  puts a.add(b)
-{/syntaxhighlighter}</p>
+<p>And the code to use it:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">b</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="n">gsl_complex_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span></code></pre></figure>
+
+<p>But what if I wanted to be able to do something like:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">b</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="n">a</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></code></pre></figure>
 
 <p>The above would require creating another wrapper routine, with a shortened name.  Of course, there’s always the overriding of operators, but that’s for later.  I’d rather not have to do that much typing (at least quadruple the lines of code on top of the attach_function statements) and then have to worry about subtle typos creating bugs… bleah. Also, any attached functions in the same module namespace as the definition of the class for that module (e.g. GSL_Complex) ends up with all of those attached functions as members of that object, but without any nice invocation properties, i.e.:</p>
 
-<p>{syntaxhighlighter brush: ruby;}
-  # attaching in the same namespace as GSL_Complex
-  a=GSL_Complex.create(1,1)
-  a.methods.grep(/gsl_complex/)
-  [“gsl_complex_abs”, “gsl_complex_div_imag”, “gsl_complex_mul”, “gsl_complex_div_real”, “gsl_complex_abs2”, “gsl_complex_conjugate”, “gsl_complex_div”, “gsl_complex_add_imag”, “gsl_complex_logabs”, “gsl_complex_inverse”, “gsl_complex_add_real”, “gsl_complex_sub_imag”, “gsl_complex_add”, “gsl_complex_negative”, “gsl_complex_sub_real”, “gsl_complex_arg”, “gsl_complex_mul_imag”, “gsl_complex_sub”, “gsl_complex_mul_real”]
-  a.gsl_complex_abs
-  ArgumentError: wrong number of arguments (0 for 1)
-	from (eval):2:in <code class="language-plaintext highlighter-rouge">gsl_complex_abs'
-	from (eval):2:in </code>abs’
-	from (irb):6
-  a.abs(a)
-  =&gt; 1.4142135623731
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="c1"># attaching in the same namespace as GSL_Complex</span>
+  <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">a</span><span class="p">.</span><span class="nf">methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/gsl_complex/</span><span class="p">)</span>
+  <span class="p">[</span><span class="s2">"gsl_complex_abs"</span><span class="p">,</span> <span class="s2">"gsl_complex_div_imag"</span><span class="p">,</span> <span class="s2">"gsl_complex_mul"</span><span class="p">,</span> <span class="s2">"gsl_complex_div_real"</span><span class="p">,</span> <span class="s2">"gsl_complex_abs2"</span><span class="p">,</span> <span class="s2">"gsl_complex_conjugate"</span><span class="p">,</span> <span class="s2">"gsl_complex_div"</span><span class="p">,</span> <span class="s2">"gsl_complex_add_imag"</span><span class="p">,</span> <span class="s2">"gsl_complex_logabs"</span><span class="p">,</span> <span class="s2">"gsl_complex_inverse"</span><span class="p">,</span> <span class="s2">"gsl_complex_add_real"</span><span class="p">,</span> <span class="s2">"gsl_complex_sub_imag"</span><span class="p">,</span> <span class="s2">"gsl_complex_add"</span><span class="p">,</span> <span class="s2">"gsl_complex_negative"</span><span class="p">,</span> <span class="s2">"gsl_complex_sub_real"</span><span class="p">,</span> <span class="s2">"gsl_complex_arg"</span><span class="p">,</span> <span class="s2">"gsl_complex_mul_imag"</span><span class="p">,</span> <span class="s2">"gsl_complex_sub"</span><span class="p">,</span> <span class="s2">"gsl_complex_mul_real"</span><span class="p">]</span>
+  <span class="n">a</span><span class="p">.</span><span class="nf">gsl_complex_abs</span>
+  <span class="no">ArgumentError</span><span class="p">:</span> <span class="n">wrong</span> <span class="n">number</span> <span class="n">of</span> <span class="n">arguments</span> <span class="p">(</span><span class="mi">0</span> <span class="k">for</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="n">from</span> <span class="p">(</span><span class="nb">eval</span><span class="p">):</span><span class="mi">2</span><span class="ss">:in</span> <span class="sb">`gsl_complex_abs'
+	from (eval):2:in `</span><span class="n">abs</span><span class="err">'</span>
+	<span class="n">from</span> <span class="p">(</span><span class="n">irb</span><span class="p">):</span><span class="mi">6</span>
+  <span class="n">a</span><span class="p">.</span><span class="nf">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="o">=&gt;</span> <span class="mf">1.4142135623731</span></code></pre></figure>
 
 <p>Double bleah!</p>
 
@@ -276,46 +271,46 @@
 
 <p>I could try to make a parser of the gsl headers and create wrappers from that, but that seems inelegant to me, though, not necessarily a bad solution.  I may still pursue this option at a later time.</p>
 
-<p>What I did was make use of the method_missing method for Object to catch any unrecognized method invocations, and then create a function at runtime if the method appears to match a function in the GSL library.  It also handles the full name, or a shortened version, e.g.
-{syntaxhighlighter brush: ruby;}
-gsl_complex_add()
-{/syntaxhighlighter}
-vs
-{syntaxhighlighter brush: ruby;}
-add()
-{/syntaxhighlighter}</p>
+<p>What I did was make use of the method_missing method for Object to catch any unrecognized method invocations, and then create a function at runtime if the method appears to match a function in the GSL library.  It also handles the full name, or a shortened version, e.g.</p>
 
-<p>Here it is:
-{syntaxhighlighter brush: ruby;}
-  class GSL_Complex &lt; ::FFI::Struct
-  ..
-    $globalGSLComplexLock = Monitor.new
-  …
-    def method_missing( called_method, *args, &amp;block )</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gsl_complex_add</span><span class="p">()</span></code></pre></figure>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  $globalGSLComplexLock.synchronize do
+<p>vs</p>
 
-    prefix = "gsl_complex_"
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">add</span><span class="p">()</span></code></pre></figure>
 
-    if ( ::GSL4r::Complex::Methods.respond_to?("#{prefix}#{called_method}") == false )
-      prefix = ""
-      if ( ::GSL4r::Complex::Methods.respond_to?("#{called_method}") == false )
-        super # NoMethodError
-      end
-    end
+<p>Here it is:</p>
 
-    self.class.class_eval &amp;lt;&amp;lt;-end_eval
-      def #{called_method}(*args, &amp;block)
-        args.insert(0, self)
-        ::GSL4r::Complex::Methods::#{prefix}#{called_method}( *args, &amp;block )
-      end
-    end_eval
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="k">class</span> <span class="nc">GSL_Complex</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">FFI</span><span class="o">::</span><span class="no">Struct</span>
+  <span class="o">..</span>
+    <span class="vg">$globalGSLComplexLock</span> <span class="o">=</span> <span class="no">Monitor</span><span class="p">.</span><span class="nf">new</span>
+  <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span> <span class="n">called_method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span> <span class="p">)</span>
 
-    __send__(called_method, *args, &amp;block)
+      <span class="vg">$globalGSLComplexLock</span><span class="p">.</span><span class="nf">synchronize</span> <span class="k">do</span>
 
-  end # globalGSLComplexLock.synchronize
-end # method_missing   ...   end {/syntaxhighlighter}
-</code></pre></div></div>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">"gsl_complex_"</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">::</span><span class="no">GSL4r</span><span class="o">::</span><span class="no">Complex</span><span class="o">::</span><span class="no">Methods</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}#{</span><span class="n">called_method</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="o">==</span> <span class="kp">false</span> <span class="p">)</span>
+          <span class="n">prefix</span> <span class="o">=</span> <span class="s2">""</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="o">::</span><span class="no">GSL4r</span><span class="o">::</span><span class="no">Complex</span><span class="o">::</span><span class="no">Methods</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">called_method</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="o">==</span> <span class="kp">false</span> <span class="p">)</span>
+            <span class="k">super</span> <span class="c1"># NoMethodError</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">class_eval</span> <span class="o">&lt;&lt;-</span><span class="no">end_eval</span><span class="sh">
+          def </span><span class="si">#{</span><span class="n">called_method</span><span class="si">}</span><span class="sh">(*args, &amp;block)
+            args.insert(0, self)
+            ::GSL4r::Complex::Methods::</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}#{</span><span class="n">called_method</span><span class="si">}</span><span class="sh">( *args, &amp;block )
+          end
+</span><span class="no">        end_eval</span>
+
+        <span class="nb">__send__</span><span class="p">(</span><span class="n">called_method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+
+      <span class="k">end</span> <span class="c1"># globalGSLComplexLock.synchronize</span>
+    <span class="k">end</span> <span class="c1"># method_missing</span>
+  <span class="o">...</span>
+  <span class="k">end</span></code></pre></figure>
 
 <p>This first checks if the called method matches the Module function call gsl_complex_#{called_method} (where called_method might be ‘add’).</p>
 
@@ -323,32 +318,32 @@ end # method_missing   ...   end {/syntaxhighlighter}
 
 <p>Finally, this is wrapped up in a synchronized block, using a Monitor object, to ensure thread safety.  It is only unsafe the first time the method is invoked (and non-existent at that point).  Every time the method is invoked after, it should not hit method_missing.  Even though all threads run under one thread in MRI, it won’t be the case for our use of JRuby, and possibly not for MRI 1.9.</p>
 
-<p>Some fun playing around in irb:
-{syntaxhighlighter brush: ruby;}
-colby@gks lib $ irb -r gsl4r
-irb(main):001:0&gt; require ‘gsl4r/complex’
-=&gt; true
-irb(main):002:0&gt; include GSL4r
-=&gt; Object
-irb(main):004:0&gt; a=GSL_Complex.create(1,1)
-=&gt; (1.0,1.0)
-irb(main):005:0&gt; b=GSL_Complex.create(2,2)
-=&gt; (2.0,2.0)
-irb(main):008:0&gt; a.methods.grep(/abs/)
-=&gt; []
-irb(main):006:0&gt; b.methods.grep(/abs/)
-=&gt; []
-irb(main):009:0&gt; a.abs
-=&gt; 1.4142135623731
-irb(main):011:0&gt; b.methods.grep(/abs/)
-=&gt; [“abs”]
-irb(main):012:0&gt; b.add(a)
-=&gt; (3.0,3.0)
-irb(main):013:0&gt; a.logabs
-=&gt; 0.346573590279973
-irb(main):014:0&gt; a.gsl_complex_logabs
-=&gt; 0.346573590279973
-{/syntaxhighlighter}</p>
+<p>Some fun playing around in irb:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">colby</span><span class="vi">@gks</span> <span class="n">lib</span> <span class="err">$</span> <span class="n">irb</span> <span class="o">-</span><span class="n">r</span> <span class="n">gsl4r</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">001</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="nb">require</span> <span class="s1">'gsl4r/complex'</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">002</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="kp">include</span> <span class="no">GSL4r</span>
+<span class="o">=&gt;</span> <span class="no">Object</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">004</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">005</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">00</span><span class="mi">8</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/abs/</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">[]</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">006</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/abs/</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">[]</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">00</span><span class="mi">9</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">abs</span>
+<span class="o">=&gt;</span> <span class="mf">1.4142135623731</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">011</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/abs/</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"abs"</span><span class="p">]</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">012</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">013</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">logabs</span>
+<span class="o">=&gt;</span> <span class="mf">0.346573590279973</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">014</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">gsl_complex_logabs</span>
+<span class="o">=&gt;</span> <span class="mf">0.346573590279973</span></code></pre></figure>
+
 
 
   </div>

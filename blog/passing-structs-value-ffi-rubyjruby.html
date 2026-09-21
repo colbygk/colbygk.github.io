@@ -232,56 +232,52 @@
 
     <p>I was stumped for a few hours on passing FFI::Structs into external routines, luckily, this post, <a href="http://groups.google.com/group/ruby-ffi/browse_thread/thread/ace0b94f7912799f#"> ‘Functions returning structures’ (groups/google/ruby-ffi)</a>, tipped me off by showing how to return a struct by value:</p>
 
-<p>From the C code:
-{syntaxhighlighter brush: ruby;}
-…
-    typedef struct
-    { 
-        int r, g, b, a; 
-    } ALLEGRO_COLOR; 
-…
-{/syntaxhighlighter}</p>
+<p>From the C code:</p>
 
-<p>And the correct ruby FFI code:
-{syntaxhighlighter brush: ruby;}
-…
-    class ALLEGRO_COLOR &lt; FFI::Struct 
-        layout :r, :float, 
-               :g, :float, 
-               :b, :float, 
-               :a, :float 
-    end 
-    attach_function :al_map_rgb, [:uchar, :uchar, :uchar], ALLEGRO_COLOR.by_value
-…
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">...</span>
+    <span class="n">typedef</span> <span class="n">struct</span>
+    <span class="p">{</span> 
+        <span class="n">int</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">;</span> 
+    <span class="p">}</span> <span class="no">ALLEGRO_COLOR</span><span class="p">;</span> 
+<span class="o">...</span></code></pre></figure>
+
+<p>And the correct ruby FFI code:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">...</span>
+    <span class="k">class</span> <span class="nc">ALLEGRO_COLOR</span> <span class="o">&lt;</span> <span class="no">FFI</span><span class="o">::</span><span class="no">Struct</span> 
+        <span class="n">layout</span> <span class="ss">:r</span><span class="p">,</span> <span class="ss">:float</span><span class="p">,</span> 
+               <span class="ss">:g</span><span class="p">,</span> <span class="ss">:float</span><span class="p">,</span> 
+               <span class="ss">:b</span><span class="p">,</span> <span class="ss">:float</span><span class="p">,</span> 
+               <span class="ss">:a</span><span class="p">,</span> <span class="ss">:float</span> 
+    <span class="k">end</span> 
+    <span class="n">attach_function</span> <span class="ss">:al_map_rgb</span><span class="p">,</span> <span class="p">[</span><span class="ss">:uchar</span><span class="p">,</span> <span class="ss">:uchar</span><span class="p">,</span> <span class="ss">:uchar</span><span class="p">],</span> <span class="no">ALLEGRO_COLOR</span><span class="p">.</span><span class="nf">by_value</span>
+<span class="o">...</span></code></pre></figure>
 
 <p>The existing FFI documentation is anemic in this area, and focuses on the more complex, though yet, more often used passing of pointer references to FFI::Structs, making it not obvious what to do with routines to make use of passing in structs  ‘by value’.  Though, had I examined the methods offered by my derived GSL_Complex &lt; FFI::Struct, I might have noticed the ‘by_value’.  Offering documentation help to Wayne Meissner</p>
 
 <p>Now I have the means to wrapper up the GSL (Gnu-Scientific Library) routines for my <a href="http://rubyforge.org/projects/gsl4r/">gsl4r</a> work.  The GSL library routines covering complex numbers pass around structs by value in a big way.</p>
 
-<p>My ruby ffi code:
-{syntaxhighlighter brush: ruby;}
-…
-  attach_function :gsl_complex_add, [ GSL_Complex.by_value, GSL_Complex.by_value ], GSL_Complex.by_value
-…
-{/syntaxhighlighter}</p>
+<p>My ruby ffi code:</p>
 
-<p>Demo:
-{syntaxhighlighter brush: ruby;}
-colby@gks lib $ jirb -r gsl4r
-irb(main):001:0&gt; include GSL4r
-=&gt; Object
-irb(main):002:0&gt; a=GSL_Complex.new
-=&gt; (0.0,0.0)
-irb(main):003:0&gt; a.set(1,1)
-=&gt; (1.0,1.0)
-irb(main):004:0&gt; b=GSL_Complex.new
-=&gt; (0.0,0.0)
-irb(main):005:0&gt; b.set(2,2)
-=&gt; (2.0,2.0)
-irb(main):006:0&gt; c=GSL4r::gsl_complex_add(a,b)
-=&gt; (3.0,3.0)
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">...</span>
+  <span class="n">attach_function</span> <span class="ss">:gsl_complex_add</span><span class="p">,</span> <span class="p">[</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span><span class="p">,</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span> <span class="p">],</span> <span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">by_value</span>
+<span class="o">...</span></code></pre></figure>
+
+<p>Demo:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">colby</span><span class="vi">@gks</span> <span class="n">lib</span> <span class="err">$</span> <span class="n">jirb</span> <span class="o">-</span><span class="n">r</span> <span class="n">gsl4r</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">001</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="kp">include</span> <span class="no">GSL4r</span>
+<span class="o">=&gt;</span> <span class="no">Object</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">002</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">003</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">004</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="o">=</span><span class="no">GSL_Complex</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">005</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">irb</span><span class="p">(</span><span class="n">main</span><span class="p">):</span><span class="mo">006</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span> <span class="n">c</span><span class="o">=</span><span class="no">GSL4r</span><span class="o">::</span><span class="n">gsl_complex_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">)</span></code></pre></figure>
 
 <p>Now, my next question is, <a href="http://shrewdraven.com/content/using-initialize-ffistruct">should it be possible to define an initializer for a class that inherits from FFI::Struct</a>?</p>
 

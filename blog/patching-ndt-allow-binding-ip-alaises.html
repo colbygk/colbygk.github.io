@@ -241,193 +241,170 @@
 
 <p>These changes work against ndt-3.6.2b.tar.gz (current as of 12 Apr 2010, see <a href="http://software.internet2.edu/sources/ndt/">http://software.internet2.edu/sources/ndt/</a>).</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst # tar xzf ndt-3.6.2b.tar.gz 
-uxmal:~/inst # patch -p1 &lt; specify-address.patch 
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst <span class="c"># tar xzf ndt-3.6.2b.tar.gz </span>
+uxmal:~/inst <span class="c"># patch -p1 &lt; specify-address.patch </span>
 patching file ndt-3.6.2b/src/fakewww.c
 patching file ndt-3.6.2b/src/network.c
 patching file ndt-3.6.2b/src/usage.c
-uxmal:~/inst # cd ndt-3.6.2b
-uxmal:~/inst/ndt-3.6.2b # ./configure
-…
-uxmal:~/inst/ndt-3.6.2b # make &amp;&amp; make install
-…
-uxmal:~/inst/ndt-3.6.2b # /usr/local/sbin/fakewww -a 74.43.140.29 -p 80 -d
-May  4 21:06:03 fakewww server started (NDT version 3.6.2b)
-	addr = ndt.hcro.org
-	port = 80
-	federated mode = off
-	access log = /usr/local/ndt/access_log
-	error log = /usr/local/ndt/error_log
-	basedir = /usr/local/ndt
-	debug level set to 1
-{/syntaxhighlighter}</p>
+uxmal:~/inst <span class="c"># cd ndt-3.6.2b</span>
+uxmal:~/inst/ndt-3.6.2b <span class="c"># ./configure</span>
+...
+uxmal:~/inst/ndt-3.6.2b <span class="c"># make &amp;&amp; make install</span>
+...
+uxmal:~/inst/ndt-3.6.2b <span class="c"># /usr/local/sbin/fakewww -a 74.43.140.29 -p 80 -d</span>
+May  4 21:06:03 fakewww server started <span class="o">(</span>NDT version 3.6.2b<span class="o">)</span>
+	addr <span class="o">=</span> ndt.hcro.org
+	port <span class="o">=</span> 80
+	federated mode <span class="o">=</span> off
+	access log <span class="o">=</span> /usr/local/ndt/access_log
+	error log <span class="o">=</span> /usr/local/ndt/error_log
+	basedir <span class="o">=</span> /usr/local/ndt
+	debug level <span class="nb">set </span>to 1</code></pre></figure>
 
-<p>Full patch:
-{syntaxhighlighter brush:diff;}
-diff -up unpatched/ndt-3.6.2b/src/fakewww.c patched/ndt-3.6.2b/src/fakewww.c
-— unpatched/ndt-3.6.2b/src/fakewww.c	2010-03-25 08:45:12.000000000 -0700
-+++ patched/ndt-3.6.2b/src/fakewww.c	2010-05-04 20:25:09.000000000 -0700
-@@ -97,6 +97,7 @@ static struct option long_options[] = {
-   {“help”, 0, 0, ‘h’},
-   {“alog”, 1, 0, ‘l’},
-   {“elog”, 1, 0, ‘e’},</p>
-<ul>
-  <li>{“address”, 1, 0, ‘a’},
-{“port”, 1, 0, ‘p’},
-{“ttl”, 1, 0, ‘t’},
-{“federated”, 0, 0, ‘F’},
-@@ -145,6 +146,8 @@ main(int argc, char** argv)
-struct sockaddr_storage cli_addr;
-I2Addr listenaddr = NULL;
-Allowed* ptr;</li>
-  <li>size_t l = 255;</li>
-  <li>char buf[256];</li>
-</ul>
+<p>Full patch:</p>
 
-<p>#ifdef AF_INET6
- #define GETOPT_LONG_INET6(x) “46”x
-@@ -153,7 +156,7 @@ main(int argc, char** argv)
- #endif</p>
-
-<p>while ((c = getopt_long(argc, argv,</p>
-<ul>
-  <li>GETOPT_LONG_INET6(“dhl:e:p:t:Ff:b:sS:v”), long_options, 0)) != -1) {</li>
-  <li>GETOPT_LONG_INET6(“dhl:e:a:p:t:Ff:b:sS:v”), long_options, 0)) != -1) {
-     switch (c) {
-       case ‘4’:
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="gh">diff -up unpatched/ndt-3.6.2b/src/fakewww.c patched/ndt-3.6.2b/src/fakewww.c
+</span><span class="gd">--- unpatched/ndt-3.6.2b/src/fakewww.c	2010-03-25 08:45:12.000000000 -0700
+</span><span class="gi">+++ patched/ndt-3.6.2b/src/fakewww.c	2010-05-04 20:25:09.000000000 -0700
+</span><span class="p">@@ -97,6 +97,7 @@</span> static struct option long_options[] = {
+   {"help", 0, 0, 'h'},
+   {"alog", 1, 0, 'l'},
+   {"elog", 1, 0, 'e'},
+<span class="gi">+  {"address", 1, 0, 'a'},
+</span>   {"port", 1, 0, 'p'},
+   {"ttl", 1, 0, 't'},
+   {"federated", 0, 0, 'F'},
+<span class="p">@@ -145,6 +146,8 @@</span> main(int argc, char** argv)
+   struct sockaddr_storage cli_addr;
+   I2Addr listenaddr = NULL;
+   Allowed* ptr;
+<span class="gi">+  size_t l = 255;
++  char buf[256];
+</span> 
+ #ifdef AF_INET6
+ #define GETOPT_LONG_INET6(x) "46"x
+<span class="p">@@ -153,7 +156,7 @@</span> main(int argc, char** argv)
+ #endif
+   
+   while ((c = getopt_long(argc, argv,
+<span class="gd">-          GETOPT_LONG_INET6("dhl:e:p:t:Ff:b:sS:v"), long_options, 0)) != -1) {
+</span><span class="gi">+          GETOPT_LONG_INET6("dhl:e:a:p:t:Ff:b:sS:v"), long_options, 0)) != -1) {
+</span>     switch (c) {
+       case '4':
          conn_options |= OPT_IPV4_ONLY;
-@@ -177,6 +180,9 @@ main(int argc, char** argv)
-       case ‘e’:
+<span class="p">@@ -177,6 +180,9 @@</span> main(int argc, char** argv)
+       case 'e':
          ErLogFileName = optarg;
-         break;</li>
-  <li>case ‘a’:</li>
-  <li>srcname = optarg;</li>
-  <li>break;
-       case ‘p’:
-listenport = optarg;
-break;
-@@ -262,6 +268,8 @@ main(int argc, char** argv)</li>
-</ul>
-
-<p>tt = time(0);
-   log_println(1, “%15.15s fakewww server started (NDT version %s)”, ctime(&amp;tt)+4, VERSION);</p>
-<ul>
-  <li>I2AddrNodeName( listenaddr, buf, &amp;l );</li>
-  <li>log_println(1, “\taddr = %s”, buf);
-log_println(1, “\tport = %d”, I2AddrPort(listenaddr));
-log_println(1, “\tfederated mode = %s”, (federated == 1) ? “on” : “off”);
-log_println(1, “\taccess log = %s\n\terror log = %s”, AcLogFileName, ErLogFileName);
-diff -up unpatched/ndt-3.6.2b/src/network.c patched/ndt-3.6.2b/src/network.c
-— unpatched/ndt-3.6.2b/src/network.c	2010-04-12 16:02:45.000000000 -0700
-+++ patched/ndt-3.6.2b/src/network.c	2010-05-04 20:21:43.000000000 -0700
-@@ -109,10 +109,11 @@ OpenSocket(I2Addr addr, char* serv, int
+         break;
+<span class="gi">+      case 'a':
++        srcname = optarg;
++        break;
+</span>       case 'p':
+         listenport = optarg;
+         break;
+<span class="p">@@ -262,6 +268,8 @@</span> main(int argc, char** argv)
+ 
+   tt = time(0);
+   log_println(1, "%15.15s fakewww server started (NDT version %s)", ctime(&amp;tt)+4, VERSION);
+<span class="gi">+  I2AddrNodeName( listenaddr, buf, &amp;l );
++  log_println(1, "\taddr = %s", buf);
+</span>   log_println(1, "\tport = %d", I2AddrPort(listenaddr));
+   log_println(1, "\tfederated mode = %s", (federated == 1) ? "on" : "off");
+   log_println(1, "\taccess log = %s\n\terror log = %s", AcLogFileName, ErLogFileName);
+<span class="gh">diff -up unpatched/ndt-3.6.2b/src/network.c patched/ndt-3.6.2b/src/network.c
+</span><span class="gd">--- unpatched/ndt-3.6.2b/src/network.c	2010-04-12 16:02:45.000000000 -0700
+</span><span class="gi">+++ patched/ndt-3.6.2b/src/network.c	2010-05-04 20:21:43.000000000 -0700
+</span><span class="p">@@ -109,10 +109,11 @@</span> OpenSocket(I2Addr addr, char* serv, int
  failsock:
-  /* RAC debug statemement 10/11/06 */
-  log_println(1, “failsock: Unable to set socket options for fd=%d”, fd);</li>
-  <li>while((close(fd) &lt; 0) &amp;&amp; (errno == EINTR));</li>
-  <li>while(fd &gt; 3 &amp;&amp; (close(fd) &lt; 0) &amp;&amp; (errno == EINTR));</li>
-  <li>
-    <p>fd = -1;
-   }</p>
-  </li>
-  <li>if (meta.family == 0)</li>
-  <li>if (meta.family == 0 &amp;&amp; ai != NULL)
-  meta.family = ai-&gt;ai_family;
-return fd;
+     /* RAC debug statemement 10/11/06 */
+     log_println(1, "failsock: Unable to set socket options for fd=%d", fd);
+<span class="gd">-    while((close(fd) &lt; 0) &amp;&amp; (errno == EINTR));
+</span><span class="gi">+    while(fd &gt; 3 &amp;&amp; (close(fd) &lt; 0) &amp;&amp; (errno == EINTR));
++    fd = -1;
+</span>   }
+   
+<span class="gd">-  if (meta.family == 0)
+</span><span class="gi">+  if (meta.family == 0 &amp;&amp; ai != NULL)
+</span>     meta.family = ai-&gt;ai_family;
+   return fd;
  }
-diff -up unpatched/ndt-3.6.2b/src/usage.c patched/ndt-3.6.2b/src/usage.c
-— unpatched/ndt-3.6.2b/src/usage.c	2010-03-01 14:51:39.000000000 -0800
-+++ patched/ndt-3.6.2b/src/usage.c	2010-05-04 20:21:43.000000000 -0700
-@@ -161,6 +161,7 @@ www_long_usage(char* info)
-  printf(“  -b, –basedir path     - set the basedir for the documents\n”);
-  printf(“  -S, –logfacility #F   - specify syslog facility name\n”);
-  printf(“                           Note: this doesn’t enable ‘syslog’\n”);</li>
-  <li>printf(“  -a, –address          - specify alternate address to bind to\n”);
-printf(“  -p, –port #port       - specify the port number (default is 7123)\n”);
-printf(“  -t, –ttl #amount      - specify maximum number of hops in path (default is 10)<br />
-n”);
-printf(“  –dflttree fn          - specify alternate ‘Default.tree’ file\n”);
-{/syntaxhighlighter}</li>
-</ul>
+<span class="gh">diff -up unpatched/ndt-3.6.2b/src/usage.c patched/ndt-3.6.2b/src/usage.c
+</span><span class="gd">--- unpatched/ndt-3.6.2b/src/usage.c	2010-03-01 14:51:39.000000000 -0800
+</span><span class="gi">+++ patched/ndt-3.6.2b/src/usage.c	2010-05-04 20:21:43.000000000 -0700
+</span><span class="p">@@ -161,6 +161,7 @@</span> www_long_usage(char* info)
+     printf("  -b, --basedir path     - set the basedir for the documents\n");
+     printf("  -S, --logfacility #F   - specify syslog facility name\n");
+     printf("                           Note: this doesn't enable 'syslog'\n");
+<span class="gi">+    printf("  -a, --address          - specify alternate address to bind to\n");
+</span>     printf("  -p, --port #port       - specify the port number (default is 7123)\n");
+     printf("  -t, --ttl #amount      - specify maximum number of hops in path (default is 10)\
+<span class="p">n");
+</span>     printf("  --dflttree fn          - specify alternate 'Default.tree' file\n");</code></pre></figure>
 
 <p>Further notes on installation:</p>
 
 <p>The host I decided to install on is running <a href="http://www.opensuse.org">openSUSE 11.1</a> Linux.  The NDT tools require special kernel patches to be installed, which, are helpfully provided at <a href="http://www.web100.org/download/">web100.org</a>.  The openSUSE 11.1 release comes with Linux Kernel 2.6.27 (sub-versioned to 2.6.27.21-0.1).  You should install kernel sources, sun’s JDK, and libpcap-devel:</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b # zypper shell
-zypper&gt; install kernel-source
-…
-zypper&gt; install java-1_5_0-sun-devel
-…
-zypper&gt; install libpcap-devel
-…
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b <span class="c"># zypper shell</span>
+zypper&gt; <span class="nb">install </span>kernel-source
+...
+zypper&gt; <span class="nb">install </span>java-1_5_0-sun-devel
+...
+zypper&gt; <span class="nb">install </span>libpcap-devel
+...</code></pre></figure>
 
 <p>Now, make backups of your running kernel and modules in /lib/modules/<code class="language-plaintext highlighter-rouge">uname -r</code>, then apply the patches:</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:/usr/src/linux # patch -p1 &lt; ~/inst/web100/web100-2.6.27-2.5.22-200810130047.patch
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:/usr/src/linux <span class="c"># patch -p1 &lt; ~/inst/web100/web100-2.6.27-2.5.22-200810130047.patch</span>
 patching file Documentation/web100/locking.txt
 patching file Documentation/web100/proc_interface.txt
 patching file Documentation/web100/sysctl.txt
 patching file Makefile
-Hunk #1 FAILED at 1.
-1 out of 1 hunk FAILED – saving rejects to file Makefile.rej
+Hunk <span class="c">#1 FAILED at 1.</span>
+1 out of 1 hunk FAILED <span class="nt">--</span> saving rejects to file Makefile.rej
 patching file fs/proc/Makefile
-…
-{/syntaxhighlighter}</p>
+...</code></pre></figure>
 
 <p>Note that the patches applied cleanly, except for Makefile, which collided with the “EXTRAVERSION”, which is to be expected.  If you follow the <a href="http://www.internet2.edu/pubs/ndt-cookbook.pdf">NDT cookbook</a> or are already familiar with compiling the Linux Kernel, you’ll know why.  Short answer, edit with:</p>
 
-<p>{syntaxhighlighter brush: plain;}
-EXTRAVERSION = .21-web100
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">EXTRAVERSION = .21-web100</code></pre></figure>
 
 <p>This will isolate the web100 changes away from pre-existing modules, making it easier to back out of the changes.</p>
 
 <p>After this,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:/usr/src/linux # make oldconfig
-scripts/kconfig/conf -o arch/x86/Kconfig
-#</p>
-<h1 id="using-defaults-found-in-bootconfig-262721-01-pae">using defaults found in /boot/config-2.6.27.21-0.1-pae</h1>
-<p>#
-*</p>
-<ul>
-  <li>Restart config…
-*
-*</li>
-  <li>IP: Web100 networking enhancements
-*
-IP: Web100 networking enhancements (WEB100) [N/y] (NEW) Y
-Web100: Extended TCP statistics (WEB100_STATS) [N/y/?] (NEW) Y
-  Web100:   Default file permissions (WEB100_FPERMS) [384] (NEW) Y
-  Web100:   Default file permissions (WEB100_FPERMS) [384] (NEW) 
-  Web100:   Default gid (WEB100_GID) [0] (NEW) 
-  Web100:   Net100 extensions (WEB100_NET100) [N/y/?] (NEW) Y
-Web100: Netlink event notification service (WEB100_NETLINK) [N/y/?] (NEW) Y
-#
-    <h1 id="configuration-written-to-config">configuration written to .config</h1>
-    <p>#
-uxmal:/usr/src/linux # make
-…
-uxmal:/usr/src/linux # make install
-…
-uxmal:/usr/src/linux # mkinitrd
-…
-{/syntaxhighlighter}</p>
-  </li>
-</ul>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:/usr/src/linux <span class="c"># make oldconfig</span>
+scripts/kconfig/conf <span class="nt">-o</span> <span class="nb">arch</span>/x86/Kconfig
+<span class="c">#</span>
+<span class="c"># using defaults found in /boot/config-2.6.27.21-0.1-pae</span>
+<span class="c">#</span>
+<span class="k">*</span>
+<span class="k">*</span> Restart config...
+<span class="k">*</span>
+<span class="k">*</span>
+<span class="k">*</span> IP: Web100 networking enhancements
+<span class="k">*</span>
+IP: Web100 networking enhancements <span class="o">(</span>WEB100<span class="o">)</span> <span class="o">[</span>N/y] <span class="o">(</span>NEW<span class="o">)</span> Y
+  Web100: Extended TCP statistics <span class="o">(</span>WEB100_STATS<span class="o">)</span> <span class="o">[</span>N/y/?] <span class="o">(</span>NEW<span class="o">)</span> Y
+    Web100:   Default file permissions <span class="o">(</span>WEB100_FPERMS<span class="o">)</span> <span class="o">[</span>384] <span class="o">(</span>NEW<span class="o">)</span> Y
+    Web100:   Default file permissions <span class="o">(</span>WEB100_FPERMS<span class="o">)</span> <span class="o">[</span>384] <span class="o">(</span>NEW<span class="o">)</span> 
+    Web100:   Default gid <span class="o">(</span>WEB100_GID<span class="o">)</span> <span class="o">[</span>0] <span class="o">(</span>NEW<span class="o">)</span> 
+    Web100:   Net100 extensions <span class="o">(</span>WEB100_NET100<span class="o">)</span> <span class="o">[</span>N/y/?] <span class="o">(</span>NEW<span class="o">)</span> Y
+  Web100: Netlink event notification service <span class="o">(</span>WEB100_NETLINK<span class="o">)</span> <span class="o">[</span>N/y/?] <span class="o">(</span>NEW<span class="o">)</span> Y
+<span class="c">#</span>
+<span class="c"># configuration written to .config</span>
+<span class="c">#</span>
+uxmal:/usr/src/linux <span class="c"># make</span>
+...
+uxmal:/usr/src/linux <span class="c"># make install</span>
+...
+uxmal:/usr/src/linux <span class="c"># mkinitrd</span>
+...</code></pre></figure>
 
 <p>Since openSUSE uses grub, I edited /boot/grub/menu.lst and made sure the default kernel to boot was the web100 enabled one.  After a successful reboot, I confirmed web100 extensions were active by:</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:/usr/src/linux # cat /proc/web100/header | head -1
-2.5.22 200810130047 net100
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:/usr/src/linux <span class="c"># cat /proc/web100/header | head -1</span>
+2.5.22 200810130047 net100</code></pre></figure>
 
 <p>Which is the version of web100 patches I installed.  Woop!</p>
 
@@ -435,153 +412,139 @@ uxmal:/usr/src/linux # cat /proc/web100/header | head -1
 
 <p>If you do not have a copy of the sun JDK, the default JDK that comes with openSUSE 11.1 is based off of the GNU Java Compiler, which tries to create executables and you will see an error like this when building ndt,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b # make
-…
-/usr/lib/gcc/i586-suse-linux/4.3/../../../crt1.o: In function <code class="language-plaintext highlighter-rouge">_start':
-/usr/src/packages/BUILD/glibc-2.9/csu/../sysdeps/i386/elf/start.S:115: undefined reference to </code>main’
-collect2: ld returned 1 exit status
-make[2]: <em>** [Admin.class] Error 1
-make[2]: Leaving directory <code class="language-plaintext highlighter-rouge">/root/inst/ndt-3.6.2b/Admin'
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b <span class="c"># make</span>
+...
+/usr/lib/gcc/i586-suse-linux/4.3/../../../crt1.o: In <span class="k">function</span> <span class="sb">`</span>_start<span class="s1">':
+/usr/src/packages/BUILD/glibc-2.9/csu/../sysdeps/i386/elf/start.S:115: undefined reference to `main'</span>
+collect2: ld returned 1 <span class="nb">exit </span>status
+make[2]: <span class="k">***</span> <span class="o">[</span>Admin.class] Error 1
+make[2]: Leaving directory <span class="sb">`</span>/root/inst/ndt-3.6.2b/Admin<span class="s1">'
 make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory </code>/root/inst/ndt-3.6.2b’
-make: **</em> [all] Error 2
-{/syntaxhighlighter}</p>
+make[1]: Leaving directory `/root/inst/ndt-3.6.2b'</span>
+make: <span class="k">***</span> <span class="o">[</span>all] Error 2</code></pre></figure>
 
 <p>I picked 1.5 JDK since NDT is officially supported and tested against JDK 1.4.2.  Enough has changed between 1.4.2 and 1.6 that I thought this best.  I’m curious to hear if anyone has tried NDT against JDK 1.6…</p>
 
 <p>If you don’t install the libpcap-devel libraries and headers, running ./configure in ndt will skip attempting to build web100srv and if you try to build it by hand, you’ll see the following error,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b/src # make web100srv
-gcc -DHAVE_CONFIG_H -I. -I.. -I/usr/local/include/web100  -I../I2util  ‘-DBASEDIR=”/usr/local/ndt”’   -pedantic -Wall -O2 -DNDEBUG -DEXPERIMENTAL_ENABLED -DDATABASE_ENABLED -MT web100srv-web100srv.o -MD -MP -MF .deps/web100srv-web100srv.Tpo -c -o web100srv-web100srv.o <code class="language-plaintext highlighter-rouge">test -f 'web100srv.c' || echo './'</code>web100srv.c
-web100srv.c:140: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘<strong>attribute</strong>’ before ‘<em>’ token
-web100srv.c:141: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘<strong>attribute</strong>’ before ‘</em>’ token
-…
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b/src <span class="c"># make web100srv</span>
+gcc <span class="nt">-DHAVE_CONFIG_H</span> <span class="nt">-I</span><span class="nb">.</span> <span class="nt">-I</span>.. <span class="nt">-I</span>/usr/local/include/web100  <span class="nt">-I</span>../I2util  <span class="s1">'-DBASEDIR="/usr/local/ndt"'</span>   <span class="nt">-pedantic</span> <span class="nt">-Wall</span> <span class="nt">-O2</span> <span class="nt">-DNDEBUG</span> <span class="nt">-DEXPERIMENTAL_ENABLED</span> <span class="nt">-DDATABASE_ENABLED</span> <span class="nt">-MT</span> web100srv-web100srv.o <span class="nt">-MD</span> <span class="nt">-MP</span> <span class="nt">-MF</span> .deps/web100srv-web100srv.Tpo <span class="nt">-c</span> <span class="nt">-o</span> web100srv-web100srv.o <span class="sb">`</span><span class="nb">test</span> <span class="nt">-f</span> <span class="s1">'web100srv.c'</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s1">'./'</span><span class="sb">`</span>web100srv.c
+web100srv.c:140: error: expected ‘<span class="o">=</span>’, ‘,’, ‘<span class="p">;</span>’, ‘asm’ or ‘__attribute__’ before ‘<span class="k">*</span>’ token
+web100srv.c:141: error: expected ‘<span class="o">=</span>’, ‘,’, ‘<span class="p">;</span>’, ‘asm’ or ‘__attribute__’ before ‘<span class="k">*</span>’ token
+...</code></pre></figure>
 
 <p>Finally, the startup script, ndt-3.6.2b/conf/ndt is moderately out of date.   With some changes, it can be pressed into service under openSUSE,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-— ndt	2010-05-04 22:30:04.000000000 -0700
-+++ /etc/init.d/ndt	2010-05-04 22:48:51.000000000 -0700
-@@ -5,7 +5,10 @@
- # written by Peter Bertoncini <a href="mailto:pjb@anl.gov">pjb@anl.gov</a></p>
-
-<p># source function library
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nt">---</span> ndt	2010-05-04 22:30:04.000000000 <span class="nt">-0700</span>
++++ /etc/init.d/ndt	2010-05-04 22:48:51.000000000 <span class="nt">-0700</span>
+@@ <span class="nt">-5</span>,7 +5,10 @@
+ <span class="c"># written by Peter Bertoncini &lt;pjb@anl.gov&gt;</span>
+ 
+ <span class="c"># source function library</span>
 -. /etc/init.d/functions
 +#. /etc/rc.d/init.d/functions
 +
-+test -s /etc/rc.status &amp;&amp; \</p>
-<ul>
-  <li>. /etc/rc.status</li>
-</ul>
-
-<p>path=/usr/local/sbin</p>
-
-<p>@@ -16,7 +19,8 @@ path=/usr/local/sbin
- # Specify some default options.
- # WEB100SRV_OPTIONS=”-a –snaplog –tcpdump”
- NDTD_OPTIONS=”-a –snaplog –tcpdump”
--FAKEWWW_OPTIONS=””
-+FAKEWWW_OPTIONS=”-a ndt.hcro.org -p 80”
-+WEB100SRV_OPTIONS=”-a -i eth0:ndt”
- RETVAL=0</p>
-
-<p>start ()
-@@ -26,20 +30,19 @@ start ()
-    if [ $cnt = 0 ]
-    then
-       cd /usr/local/ndt/serverdata</p>
-<ul>
-  <li>echo -n “Starting ndtd:”
--#     $path/web100srv -r -a -i eth0 &gt; /dev/null 2&gt;&amp;1 &amp; 
--#     $path/web100srv $WEB100SRV_OPTIONS &gt; /dev/null 2&gt;&amp;1 &amp;</li>
-  <li>$path/ndtd $NDTD_OPTIONS &gt; /dev/null 2&gt;&amp;1 &amp;</li>
-  <li>echo -n “Starting web100srv:”
-+#      $path/web100srv -r -a -i eth0:ndt &gt; /dev/null 2&gt;&amp;1 &amp;</li>
-  <li>$path/web100srv $WEB100SRV_OPTIONS &gt; /dev/null 2&gt;&amp;1 &amp;
-+#      $path/ndtd $NDTD_OPTIONS &gt; /dev/null 2&gt;&amp;1 &amp;
-RETVAL=$?
-if [ $RETVAL = 0 ]
-then</li>
-  <li>success</li>
-  <li>
-    <h1 id="touch-varlocksubsysweb100srv">touch /var/lock/subsys/web100srv</h1>
-  </li>
-  <li>rc_status -v</li>
-  <li>touch /var/lock/subsys/web100srv
-touch /var/lock/subsys/ndtd
-       else</li>
-  <li>failure</li>
-  <li>rc_failed 0
-   fi</li>
-  <li>echo
-    fi</li>
-</ul>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cnt=`ps auxw | grep fakewww | grep -v grep | wc -l` @@ -50,12 +53,11 @@ start ()
-   RETVAL=$?
-   if [ $RETVAL = 0 ]
-   then  -	success +	rc_status -v
-     touch /var/lock/subsys/fakewww
-   else -	failure +	rc_failed 0
-   fi -      echo
-fi  }
-</code></pre></div></div>
-
-<p>@@ -63,24 +65,34 @@ stop()
- {
-    # echo -n “Stopping web100srv:”
-    # killproc web100srv -TERM</p>
-<ul>
-  <li>echo -n “Stopping ndtd:”</li>
-  <li>killproc ndtd -TERM</li>
-  <li>echo -n “Stopping web100srv:”</li>
-  <li>killproc web100srv -TERM
-RETVAL=$?</li>
-  <li>echo</li>
-  <li>
-    <h1 id="-retval--eq-0---rm--f-varlocksubsysweb100srv">[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/web100srv</h1>
-  </li>
-  <li>[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/ndtd</li>
-  <li>if [ $RETVAL = 0 ]</li>
-  <li>then</li>
-  <li>rc_status -v</li>
-  <li>else</li>
-  <li>rc_failed 0</li>
-  <li>fi</li>
-  <li>[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/web100srv</li>
-  <li>
-    <p>#[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/ndtd</p>
-
-    <p>echo -n “Stopping fakewww:”
-killproc fakewww -TERM
-RETVAL=$?</p>
-  </li>
-  <li>echo</li>
-  <li>if [ $RETVAL = 0 ]</li>
-  <li>then</li>
-  <li>rc_status -v</li>
-  <li>else</li>
-  <li>rc_failed 0</li>
-  <li>fi
-[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/fakewww
- }</li>
-</ul>
-
-<p>rhstatus() {
- 	# status web100srv</p>
-<ul>
-  <li>status ndtd</li>
-  <li>status fakewww</li>
-  <li>rc_status ndtd</li>
-  <li>rc_status fakewww
- }
- restart() {
- 	stop
-{/syntaxhighlighter}</li>
-</ul>
++test <span class="nt">-s</span> /etc/rc.status <span class="o">&amp;&amp;</span> <span class="se">\</span>
++     <span class="nb">.</span> /etc/rc.status
+ 
+ <span class="nv">path</span><span class="o">=</span>/usr/local/sbin
+ 
+@@ <span class="nt">-16</span>,7 +19,8 @@ <span class="nv">path</span><span class="o">=</span>/usr/local/sbin
+ <span class="c"># Specify some default options.</span>
+ <span class="c"># WEB100SRV_OPTIONS="-a --snaplog --tcpdump"</span>
+ <span class="nv">NDTD_OPTIONS</span><span class="o">=</span><span class="s2">"-a --snaplog --tcpdump"</span>
+<span class="nt">-FAKEWWW_OPTIONS</span><span class="o">=</span><span class="s2">""</span>
++FAKEWWW_OPTIONS<span class="o">=</span><span class="s2">"-a ndt.hcro.org -p 80"</span>
++WEB100SRV_OPTIONS<span class="o">=</span><span class="s2">"-a -i eth0:ndt"</span>
+ <span class="nv">RETVAL</span><span class="o">=</span>0
+ 
+ start <span class="o">()</span>
+@@ <span class="nt">-26</span>,20 +30,19 @@ start <span class="o">()</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$cnt</span> <span class="o">=</span> 0 <span class="o">]</span>
+    <span class="k">then
+       </span><span class="nb">cd</span> /usr/local/ndt/serverdata
+-      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting ndtd:"</span>
+-#     <span class="nv">$path</span>/web100srv <span class="nt">-r</span> <span class="nt">-a</span> <span class="nt">-i</span> eth0 <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp; 
+-#     <span class="nv">$path</span>/web100srv <span class="nv">$WEB100SRV_OPTIONS</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp;
+-      <span class="nv">$path</span>/ndtd <span class="nv">$NDTD_OPTIONS</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp;
++      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting web100srv:"</span>
++#      <span class="nv">$path</span>/web100srv <span class="nt">-r</span> <span class="nt">-a</span> <span class="nt">-i</span> eth0:ndt <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp; 
++      <span class="nv">$path</span>/web100srv <span class="nv">$WEB100SRV_OPTIONS</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp;
++#      <span class="nv">$path</span>/ndtd <span class="nv">$NDTD_OPTIONS</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp;
+       <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+       <span class="k">if</span> <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="o">=</span> 0 <span class="o">]</span>
+       <span class="k">then</span> 
+-	success
+-        <span class="c"># touch /var/lock/subsys/web100srv</span>
++	rc_status <span class="nt">-v</span>
++        <span class="nb">touch</span> /var/lock/subsys/web100srv
+         <span class="nb">touch</span> /var/lock/subsys/ndtd
+       <span class="k">else</span>
+-	failure
++	rc_failed 0
+       <span class="k">fi</span>
+-      <span class="nb">echo
+    </span><span class="k">fi
+    
+    </span><span class="nv">cnt</span><span class="o">=</span><span class="sb">`</span>ps auxw | <span class="nb">grep </span>fakewww | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep</span> | <span class="nb">wc</span> <span class="nt">-l</span><span class="sb">`</span>
+@@ <span class="nt">-50</span>,12 +53,11 @@ start <span class="o">()</span>
+       <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+       <span class="k">if</span> <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="o">=</span> 0 <span class="o">]</span>
+       <span class="k">then</span> 
+-	success
++	rc_status <span class="nt">-v</span>
+         <span class="nb">touch</span> /var/lock/subsys/fakewww
+       <span class="k">else</span>
+-	failure
++	rc_failed 0
+       <span class="k">fi</span>
+-      <span class="nb">echo
+    </span><span class="k">fi</span>
+ <span class="o">}</span>
+ 
+@@ <span class="nt">-63</span>,24 +65,34 @@ stop<span class="o">()</span>
+ <span class="o">{</span>
+    <span class="c"># echo -n "Stopping web100srv:"</span>
+    <span class="c"># killproc web100srv -TERM</span>
+-   <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping ndtd:"</span>
+-   killproc ndtd <span class="nt">-TERM</span>
++   <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping web100srv:"</span>
++   killproc web100srv <span class="nt">-TERM</span>
+    <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+-   <span class="nb">echo</span>
+-   <span class="c"># [ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/web100srv</span>
+-   <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">rm</span> <span class="nt">-f</span> /var/lock/subsys/ndtd
++   <span class="k">if</span> <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="o">=</span> 0 <span class="o">]</span>
++   <span class="k">then</span> 
++     rc_status <span class="nt">-v</span>
++   <span class="k">else</span>
++     rc_failed 0
++   <span class="k">fi</span>
++   <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">rm</span> <span class="nt">-f</span> /var/lock/subsys/web100srv
++   <span class="c">#[ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/ndtd</span>
+ 
+    <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping fakewww:"</span>
+    killproc fakewww <span class="nt">-TERM</span>
+    <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+-   <span class="nb">echo</span>
++   <span class="k">if</span> <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="o">=</span> 0 <span class="o">]</span>
++   <span class="k">then</span> 
++     rc_status <span class="nt">-v</span>
++   <span class="k">else</span>
++     rc_failed 0
++   <span class="k">fi</span>
+    <span class="o">[</span> <span class="nv">$RETVAL</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">rm</span> <span class="nt">-f</span> /var/lock/subsys/fakewww
+ <span class="o">}</span>
+ 
+ rhstatus<span class="o">()</span> <span class="o">{</span>
+ 	<span class="c"># status web100srv</span>
+-	status ndtd
+-	status fakewww
++	rc_status ndtd
++	rc_status fakewww
+ <span class="o">}</span>
+ restart<span class="o">()</span> <span class="o">{</span>
+ 	stop</code></pre></figure>
 
 <table>
   <tbody>
@@ -592,43 +555,37 @@ RETVAL=$?</p>
   </tbody>
 </table>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b/conf/ # patch -p0 &lt; ndt-init.patch 
-patching file ndt
-{/syntaxhighlighter}</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b/conf/ <span class="c"># patch -p0 &lt; ndt-init.patch </span>
+patching file ndt</code></pre></figure>
 
 <p>Copy the resulting ndt to /etc/init.d/ndt then,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b/conf # chkconfig ndt on
-uxmal:~/inst/ndt-3.6.2b/conf # chkconfig ndt
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b/conf <span class="c"># chkconfig ndt on</span>
+uxmal:~/inst/ndt-3.6.2b/conf <span class="c"># chkconfig ndt</span>
 ndt  on
-uxmal:~/inst/ndt-3.6.2b/conf # /etc/init.d/ndt start
-Starting web100srv:                                                                 done
-Starting fakewww:                                                                   done
-{/syntaxhighlighter}</p>
+uxmal:~/inst/ndt-3.6.2b/conf <span class="c"># /etc/init.d/ndt start</span>
+Starting web100srv:                                                                 <span class="k">done
+</span>Starting fakewww:                                                                   <span class="k">done</span></code></pre></figure>
 
 <p>Last, the default html page must be created using ndt-3.6.2b/conf/create-html.sh,</p>
 
-<p>{syntaxhighlighter brush: bash;}
-uxmal:~/inst/ndt-3.6.2b # conf/create-html.sh 
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">uxmal:~/inst/ndt-3.6.2b <span class="c"># conf/create-html.sh </span>
 Welcome to the NDT server configuration program.  This
-program will create a custom tcpbw100.html file for your site.</p>
+program will create a custom tcpbw100.html file <span class="k">for </span>your site.
 
-<p>Enter your site name [Internet2]  : Hat Creek Radio Observatory
-Enter your site’s location [Ann Arbor - MI]  : Hat Creek - CA
-Server connection info, enter 1 for 100 Mbps, 2 for 1 Gbps [2]  : 1</p>
+Enter your site name <span class="o">[</span>Internet2]  : Hat Creek Radio Observatory
+Enter your site<span class="s1">'s location [Ann Arbor - MI]  : Hat Creek - CA
+Server connection info, enter 1 for 100 Mbps, 2 for 1 Gbps [2]  : 1 
 
-<p>Information for email trouble reporting
+Information for email trouble reporting
 Enter email userid [rcarlson]  : colby
 Enter email domain name [internet2.edu]  : hcro.org
 Enter default subject line [Trouble report from uxmal]  : Trouble report from HCRO NDT
-The base web page ‘tcpbw100.html’ has now been created.  You
+The base web page '</span>tcpbw100.html<span class="s1">' has now been created.  You
 must move this file into the ndt_DATA directory [/usr/local/ndt]
-created during the ‘make’ process.
+created during the '</span>make<span class="s1">' process.
 Do you want to install this file now? [yes]  : 
-Enter location [/usr/local/ndt]  : 
-{/syntaxhighlighter}</p>
+Enter location [/usr/local/ndt]  : </span></code></pre></figure>
 
 <p>et voila.</p>
 
